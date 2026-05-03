@@ -29,6 +29,7 @@ use Cake\Http\MiddlewareQueue;
 use Cake\ORM\Locator\TableLocator;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
+use Cake\Event\EventManager;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
@@ -55,6 +56,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         // Call parent to load bootstrap from files.
         parent::bootstrap();
         $this->addPlugin('Authentication');
+        $this->addPlugin('SwaggerBake');
 
         if (PHP_SAPI === 'cli') {
             $this->bootstrapCli();
@@ -72,6 +74,18 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         if (Configure::read('debug')) {
             $this->addPlugin('DebugKit');
         }
+
+        // Allow unauthenticated access to Swagger in debug mode
+        EventManager::instance()->on('Controller.initialize', function ($event) {
+            $controller = $event->getSubject();
+            if ($controller->getPlugin() === 'SwaggerBake' && $controller->getName() === 'Swagger') {
+                if (Configure::read('debug')) {
+                    if ($controller->components()->has('Authentication')) {
+                        $controller->Authentication->allowUnauthenticated(['index']);
+                    }
+                }
+            }
+        });
 
         // Load more plugins here
     }
@@ -108,22 +122,35 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // https://book.cakephp.org/4/en/controllers/middleware.html#body-parser-middleware
             ->add(new BodyParserMiddleware())
 
-            ->add(new AuthenticationMiddleware($this))
-            // Cross Site Request Forgery (CSRF) Protection Middleware
-            // https://book.cakephp.org/4/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
-            ->add(new CsrfProtectionMiddleware([
-                'httponly' => true,
-            ]));
+            ->add(new AuthenticationMiddleware($this));
+
+        // Cross Site Request Forgery (CSRF) Protection Middleware
+        $csrf = new CsrfProtectionMiddleware([
+            'httponly' => true,
+        ]);
+        $csrf->skipCheckCallback(function ($request) {
+            // Skip CSRF for API requests
+            return strpos($request->getUri()->getPath(), '/api/v1') !== false;
+        });
+        $middlewareQueue->add($csrf);
 
         return $middlewareQueue;
     }
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $authenticationService = new AuthenticationService();
+
+        // Determine if the request is an API request or Swagger
+        $path = $request->getUri()->getPath();
+        $isApi = strpos($path, '/api/v1') !== false;
+        $isSwagger = strpos($path, '/swagger') !== false;
+        $debug = Configure::read('debug');
+
         $authenticationService->setConfig([
-            'unauthenticatedRedirect' => Router::url([
+            'unauthenticatedRedirect' => ($isApi || ($isSwagger && $debug)) ? null : Router::url([
                 'controller' => 'Auth',
                 'action' => 'login',
+                'plugin' => null,
             ]),
             'queryParam' => 'redirect',
         ]);
@@ -133,15 +160,24 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
         ];
 
-        $authenticationService->loadAuthenticator('Authentication.Session');
-        $authenticationService->loadAuthenticator('Authentication.Form', [
-            'fields' => $fields,
-            'loginUrl' => Router::url([
-                'controller' => 'Auth',
-                'action' => 'login',
-            ]),
-        ]);
-
+        if ($isApi) {
+            $authenticationService->loadAuthenticator('Authentication.Jwt', [
+                'secretKey' => Configure::read('Api.jwtSecret', 'super-secret-key-change-this-in-env'),
+                'algorithm' => 'HS256',
+                'returnPayload' => false,
+            ]);
+            $authenticationService->loadIdentifier('Authentication.JwtSubject');
+        } else {
+            $authenticationService->loadAuthenticator('Authentication.Session');
+            $authenticationService->loadAuthenticator('Authentication.Form', [
+                'fields' => $fields,
+                'loginUrl' => Router::url([
+                    'controller' => 'Auth',
+                    'action' => 'login',
+                    'plugin' => null,
+                ]),
+            ]);
+        }
 
         $authenticationService->loadIdentifier('Authentication.Password', compact('fields'));
 

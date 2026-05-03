@@ -20,7 +20,7 @@ class PathHelper extends Helper
     
 
     public function base_url(){
-        return 'http://' . $_SERVER['HTTP_HOST'] . '/easy-procedures/';
+        return $this->_View->Url->build('/', ['fullBase' => true]);
     }
 
 

@@ -69,6 +69,13 @@ return [
     ],
 
     /*
+     * API configuration
+     */
+    'Api' => [
+        'jwtSecret' => env('JWT_SECRET', 'a-very-long-and-secure-secret-key-for-jwt-tokens'),
+    ],
+
+    /*
      * Security and encryption configuration
      *
      * - salt - A random string used in security hashing methods.
@@ -230,23 +237,17 @@ return [
     'EmailTransport' => [
         'default' => [
             'className' => 'Cake\Mailer\Transport\SmtpTransport',
-            /*
-             * The keys host, port, timeout, username, password, client and tls
-             * are used in SMTP transports
-             */
-            'host' => 'smtp.gmail.com',
-            'port' => 587,
+            'host' => 'localhost',
+            'port' => 1025,
             'timeout' => 30,
-
-            /*
-             * It is recommended to set these options through your environment or app_local.php
-             */
-            'username' => 'khalilndam4@gmail.com',
-            'password' => 'ipidmbktrczopiap',
+            'username' => null,
+            'password' => null,
             'client' => null,
-            'tls' => true,
-            'crypto' => 'tls',
+            'tls' => false,
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+        ],
+        'debug' => [
+            'className' => 'Debug',
         ],
     ],
 
@@ -268,6 +269,10 @@ return [
              */
             //'charset' => 'utf-8',
             //'headerCharset' => 'utf-8',
+        ],
+        'debug' => [
+            'transport' => 'debug',
+            'from' => 'debug@localhost',
         ],
     ],
 

@@ -18,16 +18,40 @@ class TestController extends AppController
      */
     public function index()
     {
-
-
         $user = $this->getAuthenticatedUser();
-        if ($user) {
-            $userstable = $this->fetchTable('Users');
-            $userData = $userstable->get($user->id);
-            $this->set('user', $userData);
-        } else {
+        if (!$user) {
             $this->Flash->error('Vous devez être connecté pour accéder à cette page');
             return $this->redirect(['controller' => 'Auth', 'action' => 'login']);
+        }
+
+        $userstable = $this->fetchTable('Users');
+        $userData = $userstable->get($user->id);
+        $this->set('user', $userData);
+
+        // Fetch Metrics for Clients
+        if ($userData->id_role == 1) {
+            $requestsTable = $this->fetchTable('Requests');
+            
+            $totalRequests = $requestsTable->find()
+                ->where(['user_id' => $user->id, 'Requests.deleted' => false])
+                ->count();
+
+            $pendingRequests = $requestsTable->find()
+                ->where(['user_id' => $user->id, 'status' => 'pending', 'Requests.deleted' => false])
+                ->count();
+
+            $approvedRequests = $requestsTable->find()
+                ->where(['user_id' => $user->id, 'status' => 'success', 'Requests.deleted' => false])
+                ->count();
+
+            $recentRequests = $requestsTable->find()
+                ->where(['user_id' => $user->id, 'Requests.deleted' => false])
+                ->contain(['Procedures'])
+                ->order(['Requests.modified' => 'DESC'])
+                ->limit(5)
+                ->all();
+
+            $this->set(compact('totalRequests', 'pendingRequests', 'approvedRequests', 'recentRequests'));
         }
     }
     public function account()

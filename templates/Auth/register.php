@@ -1,35 +1,67 @@
-<div class="login-form">
-    <?= $this->form->create($user, ['controller' => 'Auth', 'action' => 'register']); ?>
-    <div class="form-group">
-        <?= $this->form->control('name', array('type' => 'text', 'placeholder' => 'name', 'class' => 'au-input au-input--full','label'=>'name*')) ?>
-    </div>
-    <div class="form-group">
+<?php $this->assign('title', 'Create your account'); ?>
 
-        <?= $this->form->control('surname', array('type' => 'text', 'placeholder' => 'surname', 'class' => 'au-input au-input--full','label'=>'surname*')) ?>
+<?= $this->Form->create($user, ['class' => 'space-y-6', 'url' => ['controller' => 'Auth', 'action' => 'register']]); ?>
+    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+        <?= $this->Form->control('name', [
+            'type' => 'text', 
+            'label' => 'Name*', 
+            'placeholder' => 'First name',
+            'required' => true
+        ]) ?>
+        
+        <?= $this->Form->control('surname', [
+            'type' => 'text', 
+            'label' => 'Surname*', 
+            'placeholder' => 'Last name',
+            'required' => true
+        ]) ?>
     </div>
-    <div class="form-group">
-        <?= $this->form->control('email', array('type' => 'email', 'placeholder' => 'email', 'class' => 'au-input au-input--full','label'=>'email*')) ?>
+
+    <?= $this->Form->control('email', [
+        'type' => 'email', 
+        'label' => 'Email address*', 
+        'placeholder' => 'you@example.com',
+        'required' => true
+    ]) ?>
+
+    <?= $this->Form->control('phonenumber', [
+        'type' => 'text', 
+        'label' => 'Phone number*', 
+        'placeholder' => '+1 (555) 000-0000',
+        'required' => true
+    ]) ?>
+
+    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+        <?= $this->Form->control('password', [
+            'type' => 'password', 
+            'label' => 'Password*', 
+            'placeholder' => '••••••••',
+            'required' => true
+        ]) ?>
+
+        <?= $this->Form->control('confirm-password', [
+            'type' => 'password', 
+            'label' => 'Confirm password*', 
+            'placeholder' => '••••••••',
+            'required' => true
+        ]) ?>
     </div>
-    <div class="form-group">
-        <?= $this->form->control('phonenumber', array('type' => 'text', 'placeholder' => 'phonenumber', 'class' => 'au-input au-input--full','label'=>'phonenumber*')) ?>
-    </div>
-    <div class="form-group">
-        <?= $this->form->control('password', array('type' => 'password', 'placeholder' => 'password', 'class' => 'au-input au-input--full','label'=>'password*')) ?>
-    </div>
-    <div class="form-group">
-        <?= $this->form->control('confirm-password', array('type' => 'password', 'placeholder' => 'confirm-password', 'class' => 'au-input au-input--full','label'=>'confirm-password*')) ?>
-    </div>
-    <div class="login-checkbox">
-        <label>
-            <?= $this->form->control('Agree the terms and policy', array('type' => 'checkbox', 'placeholder' => 'name')) ?>
+
+    <div class="flex items-center">
+        <?= $this->Form->checkbox('agree_terms', ['id' => 'agree-terms', 'class' => 'h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600', 'required' => true]) ?>
+        <label for="agree-terms" class="ml-3 block text-sm leading-6 text-gray-700">
+            I agree to the <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">terms and policy</a>
         </label>
     </div>
-    <?= $this->form->control('register', array('type' => 'submit', 'class' => 'au-btn au-btn--block au-btn--green m-b-20')) ?>
-    <?= $this->form->end(); ?>
-    <div class="register-link">
-        <p>
-            Already have account?
-            <a href="login">Sign In</a>
-        </p>
+
+    <div>
+        <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            Create account
+        </button>
     </div>
-</div>
+<?= $this->Form->end(); ?>
+
+<p class="mt-10 text-center text-sm text-gray-500">
+    Already have an account?
+    <a href="<?= $this->Url->build('/login') ?>" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Sign in</a>
+</p>

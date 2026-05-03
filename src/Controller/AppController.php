@@ -72,6 +72,9 @@ class AppController extends Controller
 
     public function getAuthenticatedUser()
     {
+        if (!isset($this->Authentication)) {
+            return null;
+        }
         $result = $this->Authentication->getResult();
         if ($result->isValid()) {
             return $result->getData();
@@ -84,31 +87,25 @@ class AppController extends Controller
     public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         parent::beforeFilter($event);
-        $this->getAuthenticationService();
-
+        // Authentication service is already checked by Middleware
     }
 
-
-    protected function getAuthenticationService(): AuthenticationServiceInterface
-    {
-        $authentication = $this->request->getAttribute('authentication');
-        if (!$authentication instanceof AuthenticationServiceInterface) {
-            throw new \RuntimeException('Invalid authentication service');
-        }
-        return $authentication;
-    }
     public function beforeRender(\Cake\Event\EventInterface $event)
     {
-        
         parent::beforeRender($event);
+        
         $user = $this->getAuthenticatedUser();
-       if ($user) {
-           $userstable = $this->fetchTable('Users');
-           $userData = $userstable->get($user->id);
-           $this->set('user', $userData);
-       } else {
-           $this->Flash->error('Vous devez être connecté pour accéder à cette page');
-           return $this->redirect(['controller' => 'Auth', 'action' => 'login']);
-       }
+        if ($user) {
+            $userstable = $this->fetchTable('Users');
+            try {
+                $userData = $userstable->get($user->id);
+                $this->set('user', $userData);
+            } catch (\Cake\Datasource\Exception\RecordNotFoundException $e) {
+                // User in session but not in DB
+                $this->set('user', null);
+            }
+        } else {
+            $this->set('user', null);
+        }
     }
 }

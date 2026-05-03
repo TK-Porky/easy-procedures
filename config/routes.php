@@ -49,10 +49,17 @@ return static function (RouteBuilder $routes) {
         /*
          * Here, we are connecting '/' (base path) to a controller called 'Pages',
          * its action called 'display', and we pass a param to select the view file
-         * to use (in this case, templates/Pages/home.php)...
+         * to use (in this case, templates/Pages/landing_page.php)...
          */
+        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'landing_page']);
 
-        $builder->connect('/', ['controller' => 'Auth', 'action' => 'login']);
+        /*
+         * Auth controller routes
+         */
+        $builder->connect('/login', ['controller' => 'Auth', 'action' => 'login']);
+        $builder->connect('/register', ['controller' => 'Auth', 'action' => 'register']);
+        $builder->connect('/forgetpassword', ['controller' => 'Auth', 'action' => 'forgetpassword']);
+        $builder->connect('/verify', ['controller' => 'Auth', 'action' => 'verify']);
 
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
@@ -65,7 +72,7 @@ return static function (RouteBuilder $routes) {
             ['id' => '\d+', 'pass' => ['id']]
         );
         $builder->connect(
-            '/Home',
+            '/dashboard',
             ['controller' => 'Test', 'action' => 'index']
         );
 
@@ -100,6 +107,40 @@ return static function (RouteBuilder $routes) {
          * You can remove these routes once you've connected the
          * routes you want in your application.
          */
+        $builder->fallbacks();
+    });
+
+    /**
+     * Swagger UI route
+     */
+    $routes->connect('/swagger', [
+        'plugin' => 'SwaggerBake',
+        'controller' => 'Swagger',
+        'action' => 'index'
+    ]);
+
+    /*
+     * API scope
+     */
+    $routes->scope('/api/v1', function (RouteBuilder $builder) {
+        $builder->setExtensions(['json']);
+        
+        // Auth API
+        $builder->connect('/users/login', ['controller' => 'Users', 'action' => 'login', 'prefix' => 'Api/V1']);
+        $builder->connect('/users/register', ['controller' => 'Users', 'action' => 'register', 'prefix' => 'Api/V1']);
+        $builder->connect('/users/forget-password', ['controller' => 'Users', 'action' => 'forgetPassword', 'prefix' => 'Api/V1']);
+        
+        // Resource routes
+        $builder->resources('Procedures', [
+            'prefix' => 'Api/V1'
+        ]);
+        $builder->resources('Requests', [
+            'prefix' => 'Api/V1'
+        ]);
+        $builder->resources('Requirements', [
+            'prefix' => 'Api/V1'
+        ]);
+        
         $builder->fallbacks();
     });
 

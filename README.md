@@ -1,53 +1,80 @@
-# CakePHP Application Skeleton
+# Easy Procedures
 
-![Build Status](https://github.com/cakephp/app/actions/workflows/ci.yml/badge.svg?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
-[![PHPStan](https://img.shields.io/badge/PHPStan-level%207-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
+Easy Procedures is a modernized bank procedure management system built with CakePHP. It features a sleek, responsive frontend and a robust RESTful API for seamless integration.
 
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 4.x.
+## Key Features
+- **Modern UI:** Responsive, utility-first design using Tailwind CSS.
+- **Hybrid Architecture:** Supports traditional MVC views and a modern REST API.
+- **Secure API:** Stateless authentication using JSON Web Tokens (JWT).
+- **Interactive Documentation:** Fully documented API using Swagger/OpenAPI.
+- **Role-Based Access:** Tailored experiences for Administrators, Agents, and Clients.
 
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+## Technology Stack
+- **Backend:** [CakePHP 4.4](https://cakephp.org)
+- **Frontend CSS:** [Tailwind CSS 3.4](https://tailwindcss.com)
+- **Frontend JS:** [Alpine.js 3.15](https://alpinejs.dev)
+- **API Auth:** [Firebase JWT](https://github.com/firebase/php-jwt)
+- **API Docs:** [Swagger Bake](https://github.com/cnizzardini/cakephp-swagger-bake)
 
-## Installation
+## Installation & Setup
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd easy-procedures
+   ```
 
-If Composer is installed globally, run
+2. **Install PHP dependencies:**
+   ```bash
+   composer install
+   ```
 
-```bash
-composer create-project --prefer-dist cakephp/app
-```
+3. **Install Frontend dependencies:**
+   ```bash
+   npm install
+   ```
 
-In case you want to use a custom app dir name (e.g. `/myapp/`):
+4. **Build Frontend Assets:**
+   ```bash
+   npm run build
+   ```
 
-```bash
-composer create-project --prefer-dist cakephp/app myapp
-```
+5. **Configuration:**
+   - Copy `config/app_local.example.php` to `config/app_local.php` and configure your database.
+   - Set a secure `JWT_SECRET` in your environment or `config/app.php`.
 
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
+## Running the Project
 
+### 1. Built-in Development Server
+The quickest way to start the project is using CakePHP's built-in server:
 ```bash
 bin/cake server -p 8765
 ```
+Once started, you can access the application at `http://localhost:8765`.
 
-Then visit `http://localhost:8765` to see the welcome page.
+### 2. Traditional Web Server (XAMPP/WAMP/Apache)
+If you are using XAMPP or a similar Apache environment:
+- Ensure your virtual host points to the `webroot` directory.
+- Access the project via your configured local domain (e.g., `http://localhost/easy-procedures`).
 
-## Update
+## Usage
 
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
+### Web Interface
+Access the main dashboard through your browser at the root URL (e.g., `http://localhost:8765`).
 
-## Configuration
+### REST API
+The API is versioned and located under `/api/v1`.
+- **Authentication:** Authenticate via `POST /api/v1/users/login.json` to receive a JWT.
+- **Documentation:** Visit `/swagger` on your local server to view the interactive API documentation.
 
-Read and edit the environment specific `config/app_local.php` and setup the 
-`'Datasources'` and any other configuration relevant for your application.
-Other environment agnostic settings can be changed in `config/app.php`.
+## Development
+- To watch for frontend changes during development:
+  ```bash
+  npm run watch
+  ```
+- To update API documentation after code changes:
+  ```bash
+  php bin/cake.php swagger bake
+  ```
 
-## Layout
-
-The app skeleton uses [Milligram](https://milligram.io/) (v1.3) minimalist CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+For a detailed history of architectural changes, please refer to the [DevChangelog.md](./DevChangelog.md).

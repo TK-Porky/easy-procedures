@@ -1,282 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="h-full bg-gray-50">
 <head>
-    <!-- Required meta tags-->
-    <meta charset="UTF-8">
+    <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="au theme template">
-    <meta name="author" content="Hau Nguyen">
-    <meta name="keywords" content="au theme template">
+    <title><?= $this->fetch('title') ?> - Easy Procedures</title>
+    <?= $this->Html->meta('icon') ?>
 
-    <!-- Title Page-->
-    <title><?= $this->request->getParam('controller') ?></title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <?= $this->Html->css(['app']) ?>
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Fontfaces CSS-->
-    <link href="<?= $this->Path->template_path() ?>css/font-face.css" rel="stylesheet" media="all">
-    <link href="<?= $this->Path->template_path() ?>vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
-    <link href="<?= $this->Path->template_path() ?>vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
-    <link href="<?= $this->Path->template_path() ?>vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
-
-    <!-- Bootstrap CSS-->
-    <link href="<?= $this->Path->template_path() ?>vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
-
-    <!-- Vendor CSS-->
-    <link href="<?= $this->Path->template_path() ?>vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
-    <link href="<?= $this->Path->template_path() ?>vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
-    <link href="<?= $this->Path->template_path() ?>vendor/wow/animate.css" rel="stylesheet" media="all">
-    <link href="<?= $this->Path->template_path() ?>vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
-    <link href="<?= $this->Path->template_path() ?>vendor/slick/slick.css" rel="stylesheet" media="all">
-    <link href="<?= $this->Path->template_path() ?>vendor/select2/select2.min.css" rel="stylesheet" media="all">
-    <link href="<?= $this->Path->template_path() ?>vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
-
-    <!-- Main CSS-->
-    <link href="<?= $this->Path->template_path() ?>css/theme.css" rel="stylesheet" media="all">
-    <link href="<?= $this->Path->template_path() ?>css/custom theme.css" rel="stylesheet" media="all">
-
+    <?= $this->fetch('meta') ?>
+    <?= $this->fetch('css') ?>
 </head>
+<body class="h-full font-sans antialiased text-gray-900" x-data="{ sidebarOpen: false }">
+    <div>
+        <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
+        <div x-show="sidebarOpen" class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
+            <div x-show="sidebarOpen" 
+                 x-transition:enter="transition-opacity ease-linear duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition-opacity ease-linear duration-300"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-gray-900/80"></div>
 
-<body class="animsition">
-    <div class="page-wrapper">
-        <!-- HEADER MOBILE-->
-        <header class="header-mobile d-block d-lg-none">
-            <div class="header-mobile__bar">
-                <div class="container-fluid">
-                    <div class="header-mobile-inner">
-                        <a class="logo" href="index.html">
-                            <img src="<?= $this->Path->template_path() ?>images/icon/logo.png" alt="CoolAdmin" />
-                        </a>
-                        <button class="hamburger hamburger--slider" type="button">
-                            <span class="hamburger-box">
-                                <span class="hamburger-inner"></span>
-                            </span>
+            <div class="fixed inset-0 flex">
+                <div x-show="sidebarOpen"
+                     x-transition:enter="transition ease-in-out duration-300 transform"
+                     x-transition:enter-start="-translate-x-full"
+                     x-transition:enter-end="translate-x-0"
+                     x-transition:leave="transition ease-in-out duration-300 transform"
+                     x-transition:leave-start="translate-x-0"
+                     x-transition:leave-end="-translate-x-full"
+                     class="relative flex flex-col flex-1 w-full max-w-xs mr-16 bg-white"
+                     @click.away="sidebarOpen = false">
+                    
+                    <div class="absolute top-0 flex justify-center w-16 pt-5 left-full">
+                        <button type="button" class="-m-2.5 p-2.5 text-white" @click="sidebarOpen = false">
+                            <span class="sr-only">Close sidebar</span>
+                            <i class="fa-solid fa-xmark text-xl"></i>
                         </button>
                     </div>
-                </div>
-            </div>
-            <nav class="navbar-mobile">
-                <div class="container-fluid">
-                    <ul class="navbar-mobile__list list-unstyled">
-                        <li <?= $this->request->getParam('controller') == 'Test' ? 'class="active"' : '' ?>>
-                            <a href="<?= $this->Url->build(['controller' => 'Test', 'action' => 'index',]) ?>" class="active">
-                                <i class="fas fa-tachometer-alt"></i><?= __('Dashboad') ?>
-                            </a>
-                        </li>
-                        <?php if ($user->id_role == 2 || $user->id_role == 3) : ?>
-                            <li <?= $this->request->getParam('controller') == 'Requests' ? 'class="active has-sub"' : '' ?>>
-                                <a href="#" class="js-arrow">
-                                    <i class="fas fa-folder"></i><?= __('Requests') ?>
-                                </a>
-                                <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-                                    <li>
-                                        <a href="<?= $this->Url->build(['controller' => 'Requests', 'action' => 'request']) ?>">All Requests</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?= $this->Url->build(['controller' => 'Requests', 'action' => 'pending']) ?>">pending</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        <?php endif; ?>
-                        <?php if ($user->id_role == 3) : ?>
-                            <li <?= $this->request->getParam('controller') == 'Requirements' ||  $this->request->getParam('controller') == 'Requirementproprieties' ? 'class="active"' : '' ?>>
-                                <a href="<?= $this->Url->build(['controller' => 'Requirements', 'action' => 'index']) ?>" class="active">
-                                    <i class="fas fa-folder"></i><?= __('Requirements') ?>
-                                </a>
-                            </li>
-                            <li <?= $this->request->getParam('controller') == 'Procedures' || $this->request->getParam('controller') == 'Procedurerequirements' ? 'class="active"' : '' ?>>
-                                <a href="<?= $this->Url->build(['controller' => 'Procedures', 'action' => 'index']) ?>" class="active">
-                                    <i class="fas fa-folder"></i><?= __('Procedures') ?>
-                                </a>
-                            </li>
-                            <li <?= $this->request->getParam('controller') == 'Users' ? 'class="active"' : '' ?>>
-                                <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'index']) ?>" class="active">
-                                    <i class="fas fa-user"></i><?= __('User') ?>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                        <?php if ($user->id_role == 1) : ?>
-                            <li <?= $this->request->getParam('controller') == 'Procedures'  || $this->request->getParam('controller') == 'Procedurerequirements' ? 'class="active"' : '' ?>>
-                                <a href="<?= $this->Url->build(['controller' => 'Procedures', 'action' => 'index']) ?>" class="active">
-                                    <i class="fas fa-folder"></i><?= __('Procedures') ?>
-                                </a>
-                            </li>
-                            <li <?= $this->request->getParam('controller') == 'Requests' &&  $this->request->getParam('action') == 'index' ? 'class="active"' : '' ?>>
-                                <a href="<?= $this->Url->build(['controller' => 'Requests', 'action' => 'index']) ?>" class="active">
-                                    <i class="fas fa-folder"></i><?= __('My Procedures') ?>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </div>
-            </nav>
-        </header>
-        <!-- END HEADER MOBILE-->
 
-        <!-- MENU SIDEBAR-->
-        <aside class="menu-sidebar d-none d-lg-block">
-            <div class="logo">
-                <a href="#">
-                    <img src="<?= $this->Path->template_path() ?>images/icon/logo.png" alt="Cool Admin" />
-                </a>
-            </div>
-            <div class="menu-sidebar__content js-scrollbar1">
-                <nav class="navbar-sidebar">
-                    <ul class="list-unstyled navbar__list">
-                        <li <?= $this->request->getParam('controller') == 'Test' ? 'class="active"' : '' ?>>
-                            <a href="<?= $this->Url->build(['controller' => 'Test', 'action' => 'index',]) ?>" class="active">
-                                <i class="fas fa-tachometer-alt"></i><?= __('Dashboad') ?>
-                            </a>
-                        </li>
-                        <?php if ($user->id_role == 2 || $user->id_role == 3) : ?>
-                            <li <?= $this->request->getParam('controller') == 'Requests' ? 'class="active has-sub"' : '' ?>>
-                                <a href="#" class="js-arrow">
-                                    <i class="fas fa-folder"></i><?= __('Requests') ?>
-                                </a>
-                                <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                    <li>
-                                        <a href="<?= $this->Url->build(['controller' => 'Requests', 'action' => 'request']) ?>">All Requests</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?= $this->Url->build(['controller' => 'Requests', 'action' => 'pending']) ?>">pending</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <?php endif;?>
-                            <?php if ( $user->id_role == 3) : ?>
-                            <li <?= $this->request->getParam('controller') == 'Requirements' ||  $this->request->getParam('controller') == 'Requirementproprieties' ? 'class="active"' : '' ?>>
-                                <a href="<?= $this->Url->build(['controller' => 'Requirements', 'action' => 'index']) ?>" class="active">
-                                    <i class="fas fa-folder"></i><?= __('Requirements') ?>
-                                </a>
-                            </li>
-                            <li <?= $this->request->getParam('controller') == 'Procedures' || $this->request->getParam('controller') == 'Procedurerequirements' ? 'class="active"' : '' ?>>
-                                <a href="<?= $this->Url->build(['controller' => 'Procedures', 'action' => 'index']) ?>" class="active">
-                                    <i class="fas fa-folder"></i><?= __('Procedures') ?>
-                                </a>
-                            </li>
-                            <li <?= $this->request->getParam('controller') == 'Users' ? 'class="active"' : '' ?>>
-                                <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'index']) ?>" class="active">
-                                    <i class="fas fa-user"></i><?= __('User') ?>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                        <?php if ($user->id_role == 1) : ?>
-                            <li <?= $this->request->getParam('controller') == 'Procedures'  || $this->request->getParam('controller') == 'Procedurerequirements' ? 'class="active"' : '' ?>>
-                                <a href="<?= $this->Url->build(['controller' => 'Procedures', 'action' => 'index']) ?>" class="active">
-                                    <i class="fas fa-folder"></i><?= __('Procedures') ?>
-                                </a>
-                            </li>
-                            <li <?= $this->request->getParam('controller') == 'Requests' &&  $this->request->getParam('action') == 'index' ? 'class="active"' : '' ?>>
-                                <a href="<?= $this->Url->build(['controller' => 'Requests', 'action' => 'index']) ?>" class="active">
-                                    <i class="fas fa-folder"></i><?= __('My Procedures') ?>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-
-                </nav>
-            </div>
-        </aside>
-        <!-- END MENU SIDEBAR-->
-
-        <!-- PAGE CONTAINER-->
-        <div class="page-container">
-            <!-- HEADER DESKTOP-->
-            <header class="header-desktop">
-                <div class="section__content section__content--p30">
-                    <div class="container-fluid">
-                        <div class="header-wrap">
-                            <div class="form-header">
-                                <?= $this->Form->create(null, ['class' => 'form-header']) ?>
-                                <?php if ($this->request->getParam('action')  == 'index' && $this->request->getParam('controller') != 'Test') : ?>
-                                    <?= $this->Form->input('query', ['class' => 'au-input au-input--xl', 'placeholder' => 'Search', $this->request->getParam('controller')]) ?>
-                                    <button class="au-btn--submit" type="submit">
-                                        <i class="zmdi zmdi-search"></i>
-                                    </button>
-                                <?php endif; ?>
-                            </div>
-                            <?= $this->Form->end() ?>
-                            <div class="header-button">
-                                <div class="account-wrap">
-                                    <div class="account-item clearfix js-item-menu">
-                                        <div class="image">
-                                            <img src="<?= $this->Path->template_path() ?>images/icon/avatar-01.png" alt="khalil ndam" />
-                                        </div>
-                                        <div class="content">
-                                            <a class="js-acc-btn" href="#"> <?php echo $user->name; ?></a>
-                                        </div>
-                                        <div class="account-dropdown js-dropdown">
-                                            <div class="info clearfix">
-                                                <div class="image">
-                                                    <a href="#">
-                                                        <img src="<?= $this->Path->template_path() ?>images/icon/avatar-01.png" alt="khalil ndam" />
-                                                    </a>
-                                                </div>
-                                                <div class="content">
-                                                    <h5 class="name">
-                                                        <a href="#"> <?php echo $user->name; ?></a>
-                                                    </h5>
-                                                    <span class="email"> <?php echo $user->email; ?></span>
-                                                </div>
-                                            </div>
-                                            <div class="account-dropdown__body">
-                                                <div class="account-dropdown__item">
-                                                    <a href="<?= $this->Url->build(['controller' => 'Test', 'action' => 'account']) ?>">
-                                                        <i class="zmdi zmdi-account"></i>Account</a>
-                                                </div>
-                                                <div class="account-dropdown__item">
-                                                    <a href="<?= $this->Url->build(['controller' => 'Requirements', 'action' => 'index']) ?>">
-                                                        <i class="zmdi zmdi-settings"></i>Setting</a>
-                                                </div>
-
-                                            </div>
-                                            <div class="account-dropdown__footer">
-                                                <a href="<?= $this->Url->build(['controller' => 'Auth', 'action' => 'logout']) ?>">
-                                                    <i class="zmdi zmdi-power"></i>Logout</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Mobile Sidebar Content -->
+                    <div class="flex flex-col px-6 pb-4 overflow-y-auto grow gap-y-5">
+                        <div class="flex items-center h-16 shrink-0">
+                            <img class="w-auto h-8" src="<?= $this->Url->build('/template/images/icon/logo.png') ?>" alt="Easy Procedures">
                         </div>
-                    </div>
-            </header>
-            <!-- HEADER DESKTOP-->
-            <div class="main-content">
-                <div class="section__content section__content--p30">
-                    <div class="container-fluid">
-                        <?= $this->Flash->render() ?>
-                        <?= $this->fetch('content') ?>
+                        <nav class="flex flex-col flex-1">
+                            <ul role="list" class="flex flex-col flex-1 gap-y-7">
+                                <li>
+                                    <ul role="list" class="-mx-2 space-y-1">
+                                        <?= $this->element('sidebar_menu') ?>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Static sidebar for desktop -->
+        <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+            <div class="flex flex-col px-6 pb-4 overflow-y-auto bg-white border-r border-gray-200 grow gap-y-5">
+                <div class="flex items-center h-16 shrink-0">
+                    <img class="w-auto h-8" src="<?= $this->Url->build('/template/images/icon/logo.png') ?>" alt="Easy Procedures">
+                </div>
+                <nav class="flex flex-col flex-1">
+                    <ul role="list" class="flex flex-col flex-1 gap-y-7">
+                        <li>
+                            <ul role="list" class="-mx-2 space-y-1">
+                                <?= $this->element('sidebar_menu') ?>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div class="lg:pl-72">
+            <div class="sticky top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">
+                <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" @click="sidebarOpen = true">
+                    <span class="sr-only">Open sidebar</span>
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <!-- Separator -->
+                <div class="w-px h-6 bg-gray-200 lg:hidden" aria-hidden="true"></div>
+
+                <div class="flex self-stretch flex-1 gap-x-4 lg:gap-x-6">
+                    <div class="relative flex flex-1">
+                        <!-- Header Search could go here if needed -->
+                    </div>
+                    <div class="flex items-center gap-x-4 lg:gap-x-6">
+                        <!-- Profile dropdown -->
+                        <div class="relative" x-data="{ open: false }">
+                            <button type="button" class="flex items-center p-1.5 -m-1.5" @click="open = !open" @click.away="open = false">
+                                <span class="sr-only">Open user menu</span>
+                                <img class="w-8 h-8 rounded-full bg-gray-50" src="<?= $this->Url->build('/template/images/icon/avatar-01.png') ?>" alt="">
+                                <span class="hidden lg:flex lg:items-center">
+                                    <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true"><?= $user->name ?></span>
+                                    <i class="ml-2 text-gray-400 fa-solid fa-chevron-down text-xs"></i>
+                                </span>
+                            </button>
+
+                            <div x-show="open"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="transform opacity-0 scale-95"
+                                 x-transition:enter-end="transform opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="transform opacity-100 scale-100"
+                                 x-transition:leave-end="transform opacity-0 scale-95"
+                                 class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                                <a href="<?= $this->Url->build(['controller' => 'Test', 'action' => 'account']) ?>" class="block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50">Account</a>
+                                <a href="<?= $this->Url->build(['controller' => 'Requirements', 'action' => 'index']) ?>" class="block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50">Settings</a>
+                                <div class="h-px my-1 bg-gray-200"></div>
+                                <a href="<?= $this->Url->build(['controller' => 'Auth', 'action' => 'logout']) ?>" class="block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <main class="py-10">
+                <div class="px-4 sm:px-6 lg:px-8">
+                    <?= $this->Flash->render() ?>
+                    <?= $this->fetch('content') ?>
+                </div>
+            </main>
+        </div>
     </div>
 
-    <!-- Jquery JS-->
-    <script src="<?= $this->Path->template_path() ?>vendor/jquery-3.2.1.min.js"></script>
-    <!-- Bootstrap JS-->
-    <script src="<?= $this->Path->template_path() ?>vendor/bootstrap-4.1/popper.min.js"></script>
-    <script src="<?= $this->Path->template_path() ?>vendor/bootstrap-4.1/bootstrap.min.js"></script>
-    <!-- Vendor JS       -->
-    <script src="<?= $this->Path->template_path() ?>vendor/slick/slick.min.js">
-    </script>
-    <script src="<?= $this->Path->template_path() ?>vendor/wow/wow.min.js"></script>
-    <script src="<?= $this->Path->template_path() ?>vendor/animsition/animsition.min.js"></script>
-    <script src="<?= $this->Path->template_path() ?>vendor/bootstrap-progressbar/bootstrap-progressbar.min.js">
-    </script>
-    <script src="<?= $this->Path->template_path() ?>vendor/counter-up/jquery.waypoints.min.js"></script>
-    <script src="<?= $this->Path->template_path() ?>vendor/counter-up/jquery.counterup.min.js">
-    </script>
-    <script src="<?= $this->Path->template_path() ?>vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="<?= $this->Path->template_path() ?>vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="<?= $this->Path->template_path() ?>vendor/chartjs/Chart.bundle.min.js"></script>
-    <script src="<?= $this->Path->template_path() ?>vendor/select2/select2.min.js">
-    </script>
-
-    <!-- Main JS-->
-    <script src="<?= $this->Path->template_path() ?>js/main.js"></script>
-
+    <?= $this->fetch('script') ?>
 </body>
-
 </html>
-<!-- end document-->

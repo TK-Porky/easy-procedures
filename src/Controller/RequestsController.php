@@ -69,9 +69,9 @@ class RequestsController extends AppController
         $userId = $this->Authentication->getIdentity()->getIdentifier();
         $this->paginate = [
             'contain' => ['Procedures', 'Users'],
-            'conditions' => ['Requests.status' => 'pending']
+            'conditions' => ['Requests.status IN' => ['pending', 'en attente']]
         ];
-        $conditions = ['Requests.status' => 'pending'];
+        $conditions = ['Requests.status IN' => ['pending', 'en attente']];
 
         if ($this->request->getQuery('search')) {
             $searchTerm = $this->request->getQuery('search');
@@ -332,8 +332,7 @@ class RequestsController extends AppController
 
         $procedurerequirements = $this->Requests->Procedures->Procedurerequirements->find('all', [
             'conditions' => [
-                'Procedurerequirements.procedure_id' => $request->procedure_id,
-                'Procedurerequirements.deleted' => false
+                'Procedurerequirements.procedure_id' => $request->procedure_id
             ],
             'contain' => ['Requirements'],
         ])->all();
@@ -357,8 +356,7 @@ class RequestsController extends AppController
 
         $procedurerequirements = $this->Requests->Procedures->Procedurerequirements->find('all', [
             'conditions' => [
-                'Procedurerequirements.procedure_id' => $request->procedure_id,
-                'Procedurerequirements.deleted' => false
+                'Procedurerequirements.procedure_id' => $request->procedure_id
             ],
             'contain' => ['Requirements'],
         ])->all();
@@ -378,7 +376,7 @@ class RequestsController extends AppController
             'contain' => ['Requirements' => ['Requirementproprieties', 'Requirementtypes'], 'Procedures']
         ]);
 
-        if (empty($procedureRequirement) || $procedureRequirement->deleted) {
+        if (empty($procedureRequirement)) {
             // Can't find procedure requirement. Show flash error and redirect
             $this->Flash->error("Can not find procedure requirement.");
             return $this->redirect($this->referer());

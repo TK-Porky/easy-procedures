@@ -51,7 +51,8 @@ return static function (RouteBuilder $routes) {
          * its action called 'display', and we pass a param to select the view file
          * to use (in this case, templates/Pages/landing_page.php)...
          */
-        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'landing_page']);
+        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
+        $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index']);
 
         /*
          * Auth controller routes

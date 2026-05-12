@@ -83,7 +83,7 @@ class ProceduresTable extends Table
 
         $validator
             ->scalar('description')
-            ->maxLength('description', 50)
+            ->maxLength('description', 255)
             ->requirePresence('description', 'create')
             ->notEmptyString('description');
 

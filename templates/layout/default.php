@@ -104,7 +104,7 @@
                                 <span class="sr-only">Open user menu</span>
                                 <img class="w-8 h-8 rounded-full bg-gray-50" src="<?= $this->Url->build('/template/images/icon/avatar-01.png') ?>" alt="">
                                 <span class="hidden lg:flex lg:items-center">
-                                    <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true"><?= $user->name ?></span>
+                                    <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true"><?= isset($user) ? h($user->name) : 'Invité' ?></span>
                                     <i class="ml-2 text-gray-400 fa-solid fa-chevron-down text-xs"></i>
                                 </span>
                             </button>
@@ -117,10 +117,17 @@
                                  x-transition:leave-start="transform opacity-100 scale-100"
                                  x-transition:leave-end="transform opacity-0 scale-95"
                                  class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                                <a href="<?= $this->Url->build(['controller' => 'Test', 'action' => 'account']) ?>" class="block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50">Account</a>
-                                <a href="<?= $this->Url->build(['controller' => 'Requirements', 'action' => 'index']) ?>" class="block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50">Settings</a>
+                                <?php
+                                    $currentPrefix = 'Client';
+                                    if (isset($user)) {
+                                        if ($user->id_role == 3) $currentPrefix = 'Admin';
+                                        elseif ($user->id_role == 2) $currentPrefix = 'Agent';
+                                    }
+                                ?>
+                                <a href="<?= $this->Url->build(['prefix' => $currentPrefix, 'controller' => 'Dashboard', 'action' => 'index']) ?>" class="block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50">Dashboard</a>
+                                <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50">Settings</a>
                                 <div class="h-px my-1 bg-gray-200"></div>
-                                <a href="<?= $this->Url->build(['controller' => 'Auth', 'action' => 'logout']) ?>" class="block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50">Logout</a>
+                                <a href="<?= $this->Url->build(['prefix' => $currentPrefix, 'controller' => 'Auth', 'action' => 'logout']) ?>" class="block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50">Logout</a>
                             </div>
                         </div>
                     </div>

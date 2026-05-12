@@ -146,12 +146,18 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $isSwagger = strpos($path, '/swagger') !== false;
         $debug = Configure::read('debug');
 
+        // Déterminer l'URL de redirection en fonction du préfixe
+        $loginUrl = ['controller' => 'Auth', 'action' => 'login', 'plugin' => null, 'prefix' => 'Client'];
+        if (strpos($path, '/admin') === 0) {
+            $loginUrl['prefix'] = 'Admin';
+        } elseif (strpos($path, '/agent') === 0) {
+            $loginUrl['prefix'] = 'Agent';
+        } elseif (strpos($path, '/client') === 0) {
+            $loginUrl['prefix'] = 'Client';
+        }
+
         $authenticationService->setConfig([
-            'unauthenticatedRedirect' => ($isApi || ($isSwagger && $debug)) ? null : Router::url([
-                'controller' => 'Auth',
-                'action' => 'login',
-                'plugin' => null,
-            ]),
+            'unauthenticatedRedirect' => ($isApi || ($isSwagger && $debug)) ? null : Router::url($loginUrl),
             'queryParam' => 'redirect',
         ]);
 
@@ -171,13 +177,10 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             $authenticationService->loadAuthenticator('Authentication.Session');
             $authenticationService->loadAuthenticator('Authentication.Form', [
                 'fields' => $fields,
-                'loginUrl' => Router::url([
-                    'controller' => 'Auth',
-                    'action' => 'login',
-                    'plugin' => null,
-                ]),
+                'loginUrl' => Router::url($loginUrl),
             ]);
         }
+
 
         $authenticationService->loadIdentifier('Authentication.Password', compact('fields'));
 

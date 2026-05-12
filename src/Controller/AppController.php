@@ -67,7 +67,7 @@ class AppController extends Controller
          * Enable the following component for recommended CakePHP form protection settings.
          * see https://book.cakephp.org/4/en/controllers/components/form-protection.html
          */
-        //$this->loadComponent('FormProtection');
+        $this->loadComponent('FormProtection');
     }
 
     public function getAuthenticatedUser()
@@ -87,7 +87,71 @@ class AppController extends Controller
     public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         parent::beforeFilter($event);
-        // Authentication service is already checked by Middleware
+        
+        $prefix = $this->request->getParam('prefix');
+        $user = $this->getAuthenticatedUser();
+
+        // Si l'utilisateur est connecté mais accède à une route sans préfixe (racine)
+        if (!$prefix && $user) {
+            $roleId = (int)$user->id_role;
+            $action = $this->request->getParam('action');
+            $controller = $this->request->getParam('controller');
+
+            // Whitelist des actions et contrôleurs autorisés à la racine pour les connectés
+            // On exclut 'display' (la vitrine) de la whitelist pour forcer la redirection vers le dashboard
+            $whitelistedActions = ['logout', 'verify', 'resetPassword'];
+            $whitelistedControllers = [
+                'Auth', 
+                'Procedurerequirements', 
+                'Requirementproprieties',
+                'Requestrequirements'
+            ];
+
+            if (!in_array($action, $whitelistedActions) && !in_array($controller, $whitelistedControllers)) {
+                if ($roleId === 3) {
+                    return $this->redirect(['prefix' => 'Admin', 'controller' => 'Dashboard', 'action' => 'index']);
+                } elseif ($roleId === 2) {
+                    return $this->redirect(['prefix' => 'Agent', 'controller' => 'Dashboard', 'action' => 'index']);
+                } elseif ($roleId === 1) {
+                    return $this->redirect(['prefix' => 'Client', 'controller' => 'Dashboard', 'action' => 'index']);
+                }
+            }
+        }
+
+        // Vérification des autorisations par préfixe
+        $action = $this->request->getParam('action');
+
+        // Si l'utilisateur est déjà connecté et tente d'accéder à une page de login
+        if ($user && $action === 'login') {
+            $roleId = (int)$user->id_role;
+            if ($roleId === 3) {
+                return $this->redirect(['prefix' => 'Admin', 'controller' => 'Dashboard', 'action' => 'index']);
+            } elseif ($roleId === 2) {
+                return $this->redirect(['prefix' => 'Agent', 'controller' => 'Dashboard', 'action' => 'index']);
+            } elseif ($roleId === 1) {
+                return $this->redirect(['prefix' => 'Client', 'controller' => 'Dashboard', 'action' => 'index']);
+            }
+        }
+
+        if ($prefix && $user && $action !== 'logout') {
+            $roleId = (int)$user->id_role;
+            $isAuthorized = false;
+
+            if (strtolower($prefix) === 'admin' && $roleId === 3) {
+                $isAuthorized = true;
+            } elseif (strtolower($prefix) === 'agent' && $roleId === 2) {
+                $isAuthorized = true;
+            } elseif (strtolower($prefix) === 'client' && $roleId === 1) {
+                $isAuthorized = true;
+            } elseif (strtolower($prefix) === 'api/v1') {
+                $isAuthorized = true;
+            }
+
+            if (!$isAuthorized) {
+                $this->Flash->error(__('Accès non autorisé.'));
+                return $this->redirect('/');
+            }
+        }
     }
 
     public function beforeRender(\Cake\Event\EventInterface $event)

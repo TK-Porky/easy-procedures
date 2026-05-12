@@ -52,49 +52,25 @@ return static function (RouteBuilder $routes) {
          * to use (in this case, templates/Pages/landing_page.php)...
          */
         $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
-        $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index']);
 
         /*
-         * Auth controller routes
+         * Auth controller routes (Deprecated - now moved to prefixes)
          */
-        $builder->connect('/login', ['controller' => 'Auth', 'action' => 'login']);
-        $builder->connect('/register', ['controller' => 'Auth', 'action' => 'register']);
-        $builder->connect('/forgetpassword', ['controller' => 'Auth', 'action' => 'forgetpassword']);
-        $builder->connect('/verify', ['controller' => 'Auth', 'action' => 'verify']);
+        //$builder->connect('/login', ['controller' => 'Auth', 'action' => 'login']);
+        //$builder->connect('/register', ['controller' => 'Auth', 'action' => 'register']);
+        //$builder->connect('/forgetpassword', ['controller' => 'Auth', 'action' => 'forgetpassword']);
+        //$builder->connect('/verify', ['controller' => 'Auth', 'action' => 'verify']);
+
 
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
          */
         $builder->connect('/pages/*', 'Pages::display');
 
-        $builder->connect(
-            '/requirements/properties/index/{id}',
-            ['controller' => 'Requirementproprieties', 'action' => 'index'],
-            ['id' => '\d+', 'pass' => ['id']]
-        );
-        $builder->connect(
-            '/dashboard',
-            ['controller' => 'Test', 'action' => 'index']
-        );
-
-        $builder->connect(
-            '/procedures/properties/{id}',
-            ['controller' => 'Procedurerequirements', 'action' => 'index'],
-            ['id' => '\d+', 'pass' => ['id']]
-        );
+        /*
+         * Catchall routes removed - everything moved to prefixes
+         */
        
-        $builder->connect(
-            '/agentlist',
-            ['controller' => 'Users', 'action' => 'index']
-        );
-        $builder->connect(
-            '/requests',
-            ['controller' => 'Requests', 'action' => 'request']
-        );
-        $builder->connect(
-            '/pending',
-            ['controller' => 'Requests', 'action' => 'pending']
-        );
         /*
          * Connect catchall routes for all controllers.
          *
@@ -119,6 +95,58 @@ return static function (RouteBuilder $routes) {
         'controller' => 'Swagger',
         'action' => 'index'
     ]);
+
+    /*
+     * Scopes par rôle (Prefix Routing)
+     */
+    $routes->prefix('Admin', function (RouteBuilder $builder) {
+        // Auth routes for Admin
+        $builder->connect('/login', ['controller' => 'Auth', 'action' => 'login']);
+        $builder->connect('/logout', ['controller' => 'Auth', 'action' => 'logout']);
+
+        // Toutes les routes /admin iront vers le dossier src/Controller/Admin
+        $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index']);
+
+        $builder->connect(
+            '/requirements/properties/index/{id}',
+            ['controller' => 'Requirementproprieties', 'action' => 'index'],
+            ['id' => '\d+', 'pass' => ['id']]
+        );
+
+        $builder->connect(
+            '/procedures/properties/{id}',
+            ['controller' => 'Procedurerequirements', 'action' => 'index'],
+            ['id' => '\d+', 'pass' => ['id']]
+        );
+
+        $builder->fallbacks(DashedRoute::class);
+    });
+
+
+    $routes->prefix('Agent', function (RouteBuilder $builder) {
+        // Auth routes for Agent
+        $builder->connect('/login', ['controller' => 'Auth', 'action' => 'login']);
+        $builder->connect('/logout', ['controller' => 'Auth', 'action' => 'logout']);
+
+        // Toutes les routes /agent iront vers le dossier src/Controller/Agent
+        $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index']);
+        $builder->fallbacks(DashedRoute::class);
+    });
+
+
+    $routes->prefix('Client', function (RouteBuilder $builder) {
+        // Auth routes for Client
+        $builder->connect('/login', ['controller' => 'Auth', 'action' => 'login']);
+        $builder->connect('/logout', ['controller' => 'Auth', 'action' => 'logout']);
+        $builder->connect('/register', ['controller' => 'Auth', 'action' => 'register']);
+        $builder->connect('/verify/*', ['controller' => 'Auth', 'action' => 'verify']);
+        $builder->connect('/forgot-password', ['controller' => 'Auth', 'action' => 'forgetpassword']);
+
+        // Toutes les routes /client iront vers le dossier src/Controller/Client
+        $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index']);
+        $builder->fallbacks(DashedRoute::class);
+    });
+
 
     /*
      * API scope

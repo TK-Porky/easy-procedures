@@ -81,8 +81,7 @@ class UsersTable extends Table
 
         $validator
             ->integer('phonenumber')
-            ->requirePresence('phonenumber', 'create')
-            ->notEmptyString('phonenumber');
+            ->allowEmptyString('phonenumber');
 
         $validator
             ->scalar('password')
@@ -101,7 +100,6 @@ class UsersTable extends Table
 
         $validator
             ->integer('id_role')
-            ->requirePresence('id_role', 'create')
             ->notEmptyString('id_role');
 
         $validator

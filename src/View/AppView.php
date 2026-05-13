@@ -40,6 +40,7 @@ class AppView extends View
         $this->loadHelper('Html');
         $this->loadHelper('Url');
         $this->loadHelper('Path');
+        $this->loadHelper('Requests');
         $this->loadHelper('Form', [
             'templates' => 'app_form',
         ]);

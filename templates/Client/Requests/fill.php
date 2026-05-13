@@ -45,7 +45,7 @@
             <div class="mt-6">
                 <?= $this->Form->create(null, ['enctype' => 'multipart/form-data', 'class' => 'space-y-6']) ?>
                 
-                <?php if ($requirement->requirementtype_id == 3) : ?>
+                <?php if ($requirement->requirementtype->type == 'formulaire') : ?>
                     <?php foreach ($requirementproprieties as $requirementpropriety) : ?>
                         <div>
                             <?= $this->Form->label($requirementpropriety->name, $requirementpropriety->label, ['class' => 'block text-sm font-medium leading-6 text-gray-900']) ?>
@@ -63,7 +63,7 @@
                         </div>
                     <?php endforeach; ?>
 
-                <?php elseif ($requirement->requirementtype_id == 4) : ?>
+                <?php elseif ($requirement->requirementtype->type == 'file') : ?>
                     <div>
                         <?= $this->Form->label('file', 'Document requis', ['class' => 'block text-sm font-medium leading-6 text-gray-900']) ?>
                         <div class="mt-2">

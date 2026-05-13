@@ -153,7 +153,7 @@ class RequestsController extends AppController
         }
 
         if ($this->request->is('post')) {
-            if ($requirement->requirementtype_id == 3) {
+            if ($requirement->requirementtype->type == 'formulaire') {
                 $requestRequirement = $requestRequirement ?? $this->Requests->Requestrequirements->newEmptyEntity();
                 $requestRequirement->set('procedurerequirement_id', $procedureRequirement->get('id'));
                 $requestRequirement->set('request_id', $request->get('id'));
@@ -207,7 +207,7 @@ class RequestsController extends AppController
                         $this->set(compact('fieldsErrors'));
                     }
                 }
-            } else if ($requirement->requirementtype_id == 4) {
+            } else if ($requirement->requirementtype->type == 'file') {
                 $requestRequirement = $this->Requests->Requestrequirements->newEmptyEntity();
 
                 $uploadUrl = $this->uploadRequirement($this->request->getData('file'));

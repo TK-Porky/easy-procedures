@@ -28,7 +28,7 @@
     <?php foreach ($requests as $request) : ?>
         <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
             <div class="aspect-video w-full overflow-hidden bg-gray-100">
-                <img src="<?= $this->Path->template_path() ?>images/<?= h($request->procedure->image) ?>" alt="<?= h($request->procedure->name) ?>" class="h-full w-full object-cover">
+                <img src="<?= $this->Path->template_path() ?>images/<?= h($request->procedure->image ?? 'procedure_default.jpg') ?>" alt="<?= h($request->procedure->name) ?>" class="h-full w-full object-cover">
             </div>
             <div class="p-6">
                 <div class="flex items-center justify-between gap-x-4">

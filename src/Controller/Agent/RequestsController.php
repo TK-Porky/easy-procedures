@@ -177,4 +177,50 @@ class RequestsController extends AppController
 
         $this->set(compact('procedurerequirements', 'request'));
     }
+
+    public function approudrequest($id)
+    {
+        $this->request->allowMethod(['post']);
+
+        $request = $this->Requests->get($id, [
+            'contain' => ['Requestrequirements']
+        ]);
+
+        $requirementstatus = true;
+        foreach ($request->requestrequirements as $requestrequirement) {
+            if ($requestrequirement->status !== 'success') {
+                $requirementstatus = false;
+                break;
+            }
+        }
+
+        if ($requirementstatus) {
+            $request->status = 'success';
+            if ($this->Requests->save($request)) {
+                $this->Flash->success('Requête approuvée avec succès.');
+            } else {
+                $this->Flash->error('Une erreur s\'est produite lors de la mise à jour du statut.');
+            }
+            return $this->redirect(['action' => 'firstview', $request->id]);
+        } else {
+            $this->Flash->error('Certains Requestrequirements ont un statut "pending" ou "rejected".');
+            return $this->redirect(['action' => 'firstview', $request->id]);
+        }
+    }
+
+    public function rejectrequest($id)
+    {
+        $this->request->allowMethod(['post']);
+
+        $request = $this->Requests->get($id);
+        $request->status = 'rejected';
+
+        if ($this->Requests->save($request)) {
+            $this->Flash->success('Requête rejetée.');
+        } else {
+            $this->Flash->error('Une erreur s\'est produite lors de la mise à jour du statut.');
+        }
+
+        return $this->redirect(['action' => 'pending']);
+    }
 }

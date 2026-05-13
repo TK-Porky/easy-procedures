@@ -69,21 +69,52 @@ $this->assign('title', 'Traitement de la demande');
         <!-- Actions Globales de la demande -->
         <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5">
             <div class="border-b border-gray-200 bg-gray-50 px-4 py-5 sm:px-6">
-                <h3 class="text-base font-semibold leading-6 text-gray-900">Décision Finale</h3>
+                <h3 class="text-base font-semibold leading-6 text-gray-900">Actions</h3>
             </div>
             <div class="px-4 py-5 sm:p-6 space-y-4">
-                <p class="text-sm text-gray-500">Une fois toutes les pièces vérifiées, prenez une décision pour cette demande.</p>
-                <?= $this->Form->postLink(
-                    '<i class="fa-solid fa-check-circle mr-2"></i> Approuver la demande',
-                    ['action' => 'approudrequest', $request->id],
-                    ['class' => 'flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500', 'escape' => false, 'confirm' => 'Êtes-vous sûr de vouloir approuver cette demande définitivement ?']
-                ) ?>
-                
-                <?= $this->Form->postLink(
-                    '<i class="fa-solid fa-times-circle mr-2"></i> Rejeter la demande',
-                    ['action' => 'rejectrequest', $request->id],
-                    ['class' => 'flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 mt-3', 'escape' => false, 'confirm' => 'Êtes-vous sûr de vouloir rejeter cette demande ?']
-                ) ?>
+                <?php if ($request->status === 'Draft') : ?>
+                    <p class="text-sm text-gray-500">Une fois toutes les pièces validées, soumettez la demande pour approbation finale par l'administration.</p>
+                    <?= $this->Form->postLink(
+                        '<i class="fa-solid fa-paper-plane mr-2"></i> Soumettre pour approbation',
+                        ['action' => 'requestapprobation', $request->id],
+                        ['class' => 'flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500', 'escape' => false, 'confirm' => 'Soumettre cette demande pour approbation finale ?']
+                    ) ?>
+                <?php elseif ($request->status === 'pending') : ?>
+                    <div class="rounded-md bg-blue-50 p-4">
+                        <div class="flex">
+                            <i class="fa-solid fa-clock text-blue-400 mt-0.5"></i>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-blue-800">En attente de validation admin</p>
+                                <p class="mt-1 text-xs text-blue-700">Cette demande a été soumise et attend la décision finale de l'administration.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <?= $this->Form->postLink(
+                        '<i class="fa-solid fa-rotate-left mr-2"></i> Annuler la soumission',
+                        ['action' => 'cancelapprobation', $request->id],
+                        ['class' => 'flex w-full justify-center rounded-md bg-yellow-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 mt-3', 'escape' => false, 'confirm' => 'Annuler la soumission de cette demande ?']
+                    ) ?>
+                <?php elseif ($request->status === 'success') : ?>
+                    <div class="rounded-md bg-green-50 p-4">
+                        <div class="flex">
+                            <i class="fa-solid fa-circle-check text-green-400 mt-0.5"></i>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-green-800">Demande approuvée</p>
+                                <p class="mt-1 text-xs text-green-700">Cette demande a été approuvée par l'administration.</p>
+                            </div>
+                        </div>
+                    </div>
+                <?php elseif ($request->status === 'rejected') : ?>
+                    <div class="rounded-md bg-red-50 p-4">
+                        <div class="flex">
+                            <i class="fa-solid fa-circle-xmark text-red-400 mt-0.5"></i>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-red-800">Demande rejetée</p>
+                                <p class="mt-1 text-xs text-red-700">Cette demande a été rejetée par l'administration.</p>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

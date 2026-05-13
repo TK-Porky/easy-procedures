@@ -236,15 +236,7 @@ return [
      */
     'EmailTransport' => [
         'default' => [
-            'className' => 'Cake\Mailer\Transport\SmtpTransport',
-            'host' => 'localhost',
-            'port' => 1025,
-            'timeout' => 30,
-            'username' => null,
-            'password' => null,
-            'client' => null,
-            'tls' => false,
-            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+            'className' => 'Debug',
         ],
         'debug' => [
             'className' => 'Debug',

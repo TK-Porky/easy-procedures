@@ -112,7 +112,7 @@ class AuthController extends AppController
         $user = $usersTable->find()->where(['token' => $verificationToken])->first();
 
         if ($user) {
-            $user->verified = true;
+            $user->Verifications = 1;
             $user->token = null;
 
             if ($usersTable->save($user)) {

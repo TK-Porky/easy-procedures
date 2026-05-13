@@ -21,7 +21,7 @@ class RequestsController extends AppController
 
         $this->paginate = [
             'contain' => ['Procedures'],
-            'conditions' => ['user_id' => $userId, 'Requests.deleted' => false]
+            'conditions' => ['user_id' => $userId, 'Requests.deleted' => 0]
         ];
         $requests = $this->paginate($this->Requests);
 
@@ -32,7 +32,7 @@ class RequestsController extends AppController
     {
         $procedureTable = $this->getTableLocator()->get('Procedures');
         $procedure = $procedureTable->find('all', [
-            'conditions' => ['id' => $id, 'deleted' => false]
+            'conditions' => ['id' => $id, 'deleted' => 0]
         ])->first();
 
         if (empty($procedure)) {
@@ -45,12 +45,8 @@ class RequestsController extends AppController
         if ($this->request->is('post')) {
             $userId = $this->Authentication->getIdentity()->getIdentifier();
 
-            $request = $this->Requests->patchEntity($request, $this->request->getData());
-            $request->user_id = $userId;
-            $request->procedure_id = $id;
-
             $existingRequest = $this->Requests->find()
-                ->where(['user_id' => $userId, 'procedure_id' => $id])
+                ->where(['user_id' => $userId, 'procedure_id' => $id, 'deleted' => 0])
                 ->first();
 
             if ($existingRequest) {
@@ -59,6 +55,12 @@ class RequestsController extends AppController
                     $existingRequest->id
                 ]);
             } else {
+                $request = $this->Requests->patchEntity($request, $this->request->getData());
+                $request->user_id = $userId;
+                $request->procedure_id = $id;
+                $request->status = 'Draft';
+                $request->deleted = 0;
+
                 if ($this->Requests->save($request)) {
                     return $this->redirect([
                         'action' => 'requirementlist',
@@ -75,14 +77,19 @@ class RequestsController extends AppController
 
     public function firstview($request_id)
     {
-        $request = $this->Requests->get($request_id, [
-            'conditions' => ['Requests.deleted' => false],
+        $userId = $this->Authentication->getIdentity()->getIdentifier();
+        $request = $this->Requests->find('all', [
+            'conditions' => [
+                'Requests.id' => $request_id,
+                'Requests.user_id' => $userId,
+                'Requests.deleted' => 0
+            ],
             'contain' => ['Users', 'Procedures', 'Requestrequirements' => ['Requestrequirementproprieties' => ['Requirementproprieties'], 'Procedurerequirements' => ['Requirements']]],
-        ]);
+        ])->first();
 
         if (empty($request)) {
             $this->Flash->error("Can not load request.");
-            return $this->redirect($this->referer());
+            return $this->redirect(['action' => 'index']);
         }
 
         $procedurerequirements = $this->Requests->Procedures->Procedurerequirements->find('all', [
@@ -97,14 +104,19 @@ class RequestsController extends AppController
 
     public function requirementlist($request_id)
     {
+        $userId = $this->Authentication->getIdentity()->getIdentifier();
         $request = $this->Requests->find('all', [
-            'conditions' => ['Requests.id' => $request_id, 'Requests.deleted' => false],
+            'conditions' => [
+                'Requests.id' => $request_id,
+                'Requests.user_id' => $userId,
+                'Requests.deleted' => 0
+            ],
             'contain' => ['Requestrequirements', 'Procedures'],
         ])->first();
 
         if (empty($request)) {
             $this->Flash->error("Can not load request.");
-            return $this->redirect($this->referer());
+            return $this->redirect(['action' => 'index']);
         }
 
         $procedurerequirements = $this->Requests->Procedures->Procedurerequirements->find('all', [
@@ -119,7 +131,7 @@ class RequestsController extends AppController
 
     public function fill($procedure_req_id, $request_id)
     {
-        $authUser = $this->getAuthenticatedUser();
+        $userId = $this->Authentication->getIdentity()->getIdentifier();
 
         $procedureRequirement = $this->Requests->Procedures->Procedurerequirements->get($procedure_req_id, [
             'contain' => ['Requirements' => ['Requirementproprieties', 'Requirementtypes'], 'Procedures']
@@ -130,13 +142,17 @@ class RequestsController extends AppController
             return $this->redirect($this->referer());
         }
 
-        $request = $this->Requests->find('all', ['conditions' => [
-            'id' => $request_id, 'deleted' => false
-        ]])->first();
+        $request = $this->Requests->find('all', [
+            'conditions' => [
+                'Requests.id' => $request_id,
+                'Requests.user_id' => $userId,
+                'Requests.deleted' => 0
+            ]
+        ])->first();
 
         if (empty($request)) {
             $this->Flash->error("Can not load request.");
-            return $this->redirect($this->referer());
+            return $this->redirect(['action' => 'index']);
         }
 
         $requestRequirement = $this->Requests->Requestrequirements->find('all', [
@@ -146,11 +162,6 @@ class RequestsController extends AppController
 
         $requirement = $procedureRequirement->requirement;
         $requirementproprieties = $requirement->requirementproprieties;
-
-        if ($authUser && $authUser->id != $request->user_id) {
-            $this->Flash->error("you have not acces in this page.");
-            return $this->redirect($this->referer());
-        }
 
         if ($this->request->is('post')) {
             if ($requirement->requirementtype->type == 'formulaire') {
@@ -236,6 +247,97 @@ class RequestsController extends AppController
             'requirementproprieties',
             'requestRequirement'
         ));
+    }
+
+    public function delete($id)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $userId = $this->Authentication->getIdentity()->getIdentifier();
+        
+        $request = $this->Requests->find()
+            ->where(['id' => $id, 'user_id' => $userId])
+            ->first();
+
+        if (empty($request)) {
+            $this->Flash->error("Request not found or you don't have access.");
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $request->deleted = true;
+        if ($this->Requests->save($request)) {
+            $this->Flash->success(__('The request has been canceled.'));
+        } else {
+            $this->Flash->error(__('The request could not be canceled. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
+
+    public function requestapprobation($id)
+    {
+        $this->request->allowMethod(['post']);
+        $userId = $this->Authentication->getIdentity()->getIdentifier();
+
+        $request = $this->Requests->find()
+            ->where(['Requests.id' => $id, 'user_id' => $userId])
+            ->contain(['Procedures' => ['Procedurerequirements'], 'Requestrequirements'])
+            ->first();
+
+        if (empty($request)) {
+            $this->Flash->error("Request not found.");
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $procedureRequirements = $request->procedure->procedurerequirements;
+        $requirementStatus = true;
+
+        foreach ($procedureRequirements as $procedureRequirement) {
+            $matchingRequirement = array_filter($request->requestrequirements, function ($rr) use ($procedureRequirement) {
+                return $rr->procedurerequirement_id == $procedureRequirement->id;
+            });
+
+            $matchingRequirement = count($matchingRequirement) > 0 ? reset($matchingRequirement) : null;
+
+            if (!$matchingRequirement || !in_array($matchingRequirement->status, ['pending', 'success'])) {
+                $requirementStatus = false;
+                break;
+            }
+        }
+
+        if ($requirementStatus) {
+            $request->status = 'pending';
+            if ($this->Requests->save($request)) {
+                $this->Flash->success('Votre demande a été soumise pour validation.');
+            } else {
+                $this->Flash->error('Une erreur s\'est produite lors de la soumission.');
+            }
+        } else {
+            $this->Flash->error('Veuillez remplir tous les pré-requis avant de soumettre.');
+        }
+
+        return $this->redirect(['action' => 'requirementlist', $request->id]);
+    }
+
+    public function cancelapprobation($id)
+    {
+        $this->request->allowMethod(['post']);
+        $userId = $this->Authentication->getIdentity()->getIdentifier();
+
+        $request = $this->Requests->get($id);
+
+        if (empty($request) || $request->user_id != $userId) {
+            $this->Flash->error("Request not found.");
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $request->status = 'Draft';
+
+        if ($this->Requests->save($request)) {
+            $this->Flash->success('Soumission annulée.');
+        } else {
+            $this->Flash->error('Une erreur s\'est produite lors de la mise à jour du statut.');
+        }
+        return $this->redirect(['action' => 'requirementlist', $request->id]);
     }
 
     private function uploadRequirement($file): string

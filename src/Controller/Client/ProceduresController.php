@@ -20,7 +20,7 @@ class ProceduresController extends AppController
     public function index()
     {
         $this->paginate = [
-            'conditions' => ['deleted' => false]
+            'conditions' => ['deleted' => 0]
         ];
         $procedures = $this->paginate($this->Procedures);
 
@@ -36,7 +36,7 @@ class ProceduresController extends AppController
     public function details($id)
     {
         $procedure = $this->Procedures->find('all', [
-            'conditions' => ['id' => $id, 'deleted' => false]
+            'conditions' => ['id' => $id, 'deleted' => 0]
         ])->first();
 
         if (empty($procedure)) {

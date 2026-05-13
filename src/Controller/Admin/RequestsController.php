@@ -106,7 +106,7 @@ class RequestsController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $request = $this->Requests->find('all', [
-            'conditions' => ['id' => $id, 'deleted' => false],
+            'conditions' => ['id' => $id, 'deleted' => 0],
         ])->first();
         if (empty($request)) {
             $this->Flash->error("request not found");
@@ -126,7 +126,7 @@ class RequestsController extends AppController
     public function firstview($request_id)
     {
         $request = $this->Requests->get($request_id, [
-            'conditions' => ['Requests.deleted' => false],
+            'conditions' => ['Requests.deleted' => 0],
             'contain' => ['Users', 'Procedures', 'Requestrequirements' => ['Requestrequirementproprieties' => ['Requirementproprieties'], 'Procedurerequirements' => ['Requirements']]],
         ]);
 

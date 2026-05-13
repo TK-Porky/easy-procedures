@@ -173,17 +173,26 @@ $this->assign('title', 'Traitement de la demande');
                             </div>
                             
                             <div class="flex gap-2">
-                                <?= $this->Form->postLink(
-                                    '<i class="fa-solid fa-check"></i> Valider',
-                                    ['action' => 'approuverequirement', $req->id],
-                                    ['escape' => false, 'confirm' => 'Confirmer la validation de cette pièce ?', 'class' => 'inline-flex items-center rounded-md bg-green-50 px-3 py-2 text-sm font-semibold text-green-700 shadow-sm ring-1 ring-inset ring-green-600/20 hover:bg-green-100']
-                                ) ?>
-                                
-                                <?= $this->Form->postLink(
-                                    '<i class="fa-solid fa-xmark"></i> Rejeter',
-                                    ['action' => 'rejectrequirement', $req->id],
-                                    ['escape' => false, 'confirm' => 'Confirmer le rejet de cette pièce ?', 'class' => 'inline-flex items-center rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 shadow-sm ring-1 ring-inset ring-red-600/20 hover:bg-red-100']
-                                ) ?>
+                                <?php if ($req->status !== 'success') : ?>
+                                    <?= $this->Form->postLink(
+                                        '<i class="fa-solid fa-check mr-1.5"></i> Valider',
+                                        ['action' => 'approuverequirement', $req->id],
+                                        ['escape' => false, 'confirm' => 'Confirmer la validation de cette pièce ?', 'class' => 'inline-flex items-center rounded-md bg-green-50 px-3 py-2 text-sm font-semibold text-green-700 shadow-sm ring-1 ring-inset ring-green-600/20 hover:bg-green-100']
+                                    ) ?>
+                                    
+                                    <?= $this->Form->postLink(
+                                        '<i class="fa-solid fa-xmark mr-1.5"></i> Rejeter',
+                                        ['action' => 'rejectrequirement', $req->id],
+                                        ['escape' => false, 'confirm' => 'Confirmer le rejet de cette pièce ?', 'class' => 'inline-flex items-center rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 shadow-sm ring-1 ring-inset ring-red-600/20 hover:bg-red-100']
+                                    ) ?>
+                                <?php else : ?>
+                                    <span class="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 bg-green-50">
+                                        <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6" aria-hidden="true">
+                                            <circle cx="3" cy="3" r="3" />
+                                        </svg>
+                                        Pièce validée
+                                    </span>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

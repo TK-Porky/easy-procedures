@@ -44,7 +44,7 @@ class RequestsTable extends Table
         parent::initialize($config);
 
         $this->setTable('requests');
-        $this->setDisplayField('name');
+        $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');

@@ -137,7 +137,7 @@ class RequestsController extends AppController
     public function firstview($request_id)
     {
         $request = $this->Requests->get($request_id, [
-            'conditions' => ['Requests.deleted' => false],
+            'conditions' => ['Requests.deleted' => 0],
             'contain' => ['Users', 'Procedures', 'Requestrequirements' => ['Requestrequirementproprieties' => ['Requirementproprieties'], 'Procedurerequirements' => ['Requirements']]],
         ]);
 
@@ -159,7 +159,7 @@ class RequestsController extends AppController
     public function requirementlist($request_id)
     {
         $request = $this->Requests->find('all', [
-            'conditions' => ['Requests.id' => $request_id, 'Requests.deleted' => false],
+            'conditions' => ['Requests.id' => $request_id, 'Requests.deleted' => 0],
             'contain' => ['Requestrequirements', 'Procedures'],
         ])->first();
 

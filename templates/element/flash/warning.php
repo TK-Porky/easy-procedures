@@ -1,18 +1,16 @@
 <?php
-
-/**
- * @var \App\View\AppView $this
- * @var array $params
- * @var string $message
- */
 if (!isset($params['escape']) || $params['escape'] !== false) {
     $message = h($message);
 }
 ?>
-<div class="sufee-alert alert with-close alert-warning alert-dismissible fade show">
-    <span class="badge badge-pill badge-warning">warning</span>
-    <div  onclick="this.classList.add('hidden');"><i class="fa fa-lightbulb"></i><?= $message ?></div>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+<div x-data="{ show: true }" x-show="show"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0 translate-y-2"
+     x-transition:enter-end="opacity-100 translate-y-0"
+     class="alert-warning mb-4">
+    <i class="fa-solid fa-triangle-exclamation text-amber-400 flex-shrink-0 mt-0.5"></i>
+    <p class="flex-1 text-sm font-medium"><?= $message ?></p>
+    <button @click="show = false" type="button" class="flex-shrink-0 text-amber-500 hover:text-amber-700 transition-colors">
+        <i class="fa-solid fa-xmark"></i>
     </button>
 </div>

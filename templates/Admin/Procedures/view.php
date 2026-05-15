@@ -19,7 +19,7 @@ $this->assign('title', 'Détails de la procédure');
         <li>
             <div class="flex items-center">
                 <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
-                <a href="<?= $this->Url->build(['action' => 'index']) ?>" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">Procedures</a>
+                <a href="<?= $this->Url->build(['action' => 'index']) ?>" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">Procédures</a>
             </div>
         </li>
         <li>
@@ -44,7 +44,7 @@ $this->assign('title', 'Détails de la procédure');
             <?= $this->Form->postLink(
                 '<i class="fa-solid fa-trash mr-2"></i> Supprimer',
                 ['action' => 'delete', $procedure->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $procedure->id), 'class' => 'inline-flex justify-center items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500', 'escape' => false]
+                ['confirm' => __('Êtes-vous sûr de vouloir supprimer # {0} ?', $procedure->id), 'class' => 'inline-flex justify-center items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500', 'escape' => false]
             ) ?>
         </div>
     </div>

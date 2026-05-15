@@ -102,15 +102,15 @@ class ProcedurerequirementsController extends AppController
             'conditions' => ['id' => $id, 'deleted' => false]
         ])->first();
         if (empty($procedurerequirement)) {
-            $this->Flash->error("propriety not found");
+            $this->Flash->error("propriété introuvable");
             $this->redirect($this->referer());
         }
         $procedurerequirement->set('deleted', true);
 
         if ($this->Procedurerequirements->save($procedurerequirement)) {
-            $this->Flash->success(__('The procedurerequirement has been deleted.'));
+            $this->Flash->success(__('Le pré-requis de la procédure a été supprimé.'));
         } else {
-            $this->Flash->error(__('The procedurerequirement could not be deleted. Please, try again.'));
+            $this->Flash->error(__('Le pré-requis de la procédure n\'a pas pu être supprimé. Veuillez réessayer.'));
         }
 
         return $this->redirect(['action' => 'index', $procedurerequirement->procedure_id]);
@@ -135,4 +135,6 @@ class ProcedurerequirementsController extends AppController
         $this->set(compact('procedurerequirements', 'procedure'));
     }
     
+}
+ 
 }

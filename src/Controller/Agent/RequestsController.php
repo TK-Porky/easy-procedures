@@ -58,12 +58,12 @@ class RequestsController extends AppController
         if ($requirementStatus) {
             $request->status = 'pending';
             if ($this->Requests->save($request)) {
-                $this->Flash->success('Tous les requis ont été remplis avec succès.');
+                $this->Flash->success('Tous les pré-requis ont été remplis avec succès.');
             } else {
                 $this->Flash->error('Une erreur s\'est produite lors de la mise à jour du statut.');
             }
         } else {
-            $this->Flash->error('Veuillez remplir tous les requis.');
+            $this->Flash->error('Veuillez remplir tous les pré-requis.');
         }
 
         return $this->redirect(['action' => 'requirementlist', $request->id]);
@@ -92,7 +92,7 @@ class RequestsController extends AppController
         $requestrequirement->status = 'success';
 
         if ($this->Requests->Requestrequirements->save($requestrequirement)) {
-            $this->Flash->success('Requirement approuvé.');
+            $this->Flash->success('Pré-requis approuvé.');
         } else {
             $this->Flash->error('Une erreur s\'est produite lors de la mise à jour du statut.');
         }
@@ -108,7 +108,7 @@ class RequestsController extends AppController
         $requestrequirement->status = 'rejected';
 
         if ($this->Requests->Requestrequirements->save($requestrequirement)) {
-             $this->Flash->success('Requirement rejeté.');
+             $this->Flash->success('Pré-requis rejeté.');
         } else {
             $this->Flash->error('Une erreur s\'est produite lors de la mise à jour du statut.');
         }
@@ -142,7 +142,7 @@ class RequestsController extends AppController
         ]);
 
         if (empty($request)) {
-            $this->Flash->error("Can not load request.");
+            $this->Flash->error("Impossible de charger la demande.");
             return $this->redirect($this->referer());
         }
 
@@ -164,7 +164,7 @@ class RequestsController extends AppController
         ])->first();
 
         if (empty($request)) {
-            $this->Flash->error("Can not load request.");
+            $this->Flash->error("Impossible de charger la demande.");
             return $this->redirect($this->referer());
         }
 
@@ -197,13 +197,13 @@ class RequestsController extends AppController
         if ($requirementstatus) {
             $request->status = 'success';
             if ($this->Requests->save($request)) {
-                $this->Flash->success('Requête approuvée avec succès.');
+                $this->Flash->success('Demande approuvée avec succès.');
             } else {
                 $this->Flash->error('Une erreur s\'est produite lors de la mise à jour du statut.');
             }
             return $this->redirect(['action' => 'firstview', $request->id]);
         } else {
-            $this->Flash->error('Certains Requestrequirements ont un statut "pending" ou "rejected".');
+            $this->Flash->error('Certains pré-requis ont un statut "en attente" ou "rejeté".');
             return $this->redirect(['action' => 'firstview', $request->id]);
         }
     }
@@ -216,7 +216,7 @@ class RequestsController extends AppController
         $request->status = 'rejected';
 
         if ($this->Requests->save($request)) {
-            $this->Flash->success('Requête rejetée.');
+            $this->Flash->success('Demande rejetée.');
         } else {
             $this->Flash->error('Une erreur s\'est produite lors de la mise à jour du statut.');
         }

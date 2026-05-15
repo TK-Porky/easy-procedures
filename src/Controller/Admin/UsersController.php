@@ -38,7 +38,7 @@ class UsersController extends AppController
             $existingUserCount = $userstable->countUsersWithEmail($user->email);
 
             if ($existingUserCount > 0) {
-                $this->Flash->error('This email is already taken.');
+                $this->Flash->error('Cette adresse email est déjà utilisée.');
                 return;
             } else {
                 $user->id_role = 2; // Agent

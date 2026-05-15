@@ -36,7 +36,7 @@ class RequestsController extends AppController
         ])->first();
 
         if (empty($procedure)) {
-            $this->Flash->error("Procedure not found");
+            $this->Flash->error("Procédure introuvable.");
             return $this->redirect($this->referer());
         }
 
@@ -69,7 +69,7 @@ class RequestsController extends AppController
                 }
             }
 
-            $this->Flash->error(__('Try again'));
+            $this->Flash->error(__('Veuillez réessayer.'));
         }
 
         $this->set(compact('request', 'procedure'));
@@ -88,7 +88,7 @@ class RequestsController extends AppController
         ])->first();
 
         if (empty($request)) {
-            $this->Flash->error("Can not load request.");
+            $this->Flash->error("Impossible de charger la demande.");
             return $this->redirect(['action' => 'index']);
         }
 
@@ -115,7 +115,7 @@ class RequestsController extends AppController
         ])->first();
 
         if (empty($request)) {
-            $this->Flash->error("Can not load request.");
+            $this->Flash->error("Impossible de charger la demande.");
             return $this->redirect(['action' => 'index']);
         }
 
@@ -138,7 +138,7 @@ class RequestsController extends AppController
         ]);
 
         if (empty($procedureRequirement)) {
-            $this->Flash->error("Can not find procedure requirement.");
+            $this->Flash->error("Pré-requis de procédure introuvable.");
             return $this->redirect($this->referer());
         }
 
@@ -151,7 +151,7 @@ class RequestsController extends AppController
         ])->first();
 
         if (empty($request)) {
-            $this->Flash->error("Can not load request.");
+            $this->Flash->error("Impossible de charger la demande.");
             return $this->redirect(['action' => 'index']);
         }
 
@@ -182,7 +182,7 @@ class RequestsController extends AppController
                         );
 
                         if (empty($propertyField)) {
-                            $fieldsErrors[$property->name] = 'Veuillez remplir le champs';
+                            $fieldsErrors[$property->name] = 'Veuillez remplir le champ';
                         } else {
                             $requestRequirementProperty = $requirementPropertiesTable->find('all', [
                                 'conditions' => [
@@ -201,20 +201,20 @@ class RequestsController extends AppController
                             $requestRequirementProperty->set('deleted', false);
 
                             if (!$requirementPropertiesTable->save($requestRequirementProperty)) {
-                                $this->Flash->error(' not save');
+                                $this->Flash->error('Erreur lors de l\'enregistrement.');
                                 return $this->redirect($this->referer());
                             }
                         }
                     }
 
                     if (empty($fieldsErrors)) {
-                        $this->Flash->success('Requirement filled successfully !');
+                        $this->Flash->success('Pré-requis rempli avec succès !');
                         return $this->redirect([
                             'action' => 'requirementlist',
                             $request_id
                         ]);
                     } else {
-                        $this->Flash->error('Failed to achieve the operation');
+                        $this->Flash->error('Échec de l\'opération.');
                         $this->set(compact('fieldsErrors'));
                     }
                 }
@@ -228,9 +228,9 @@ class RequestsController extends AppController
                 $requestRequirement->set('value', $uploadUrl);
 
                 if ($this->Requests->Requestrequirements->save($requestRequirement)) {
-                    $this->Flash->success('image upload sucess');
+                    $this->Flash->success('Téléchargement réussi.');
                 } else {
-                    $this->Flash->error('upload error');
+                    $this->Flash->error('Erreur lors du téléchargement.');
                 }
                 
                 return $this->redirect([
@@ -259,15 +259,15 @@ class RequestsController extends AppController
             ->first();
 
         if (empty($request)) {
-            $this->Flash->error("Request not found or you don't have access.");
+            $this->Flash->error("Demande introuvable ou vous n'avez pas l'accès.");
             return $this->redirect(['action' => 'index']);
         }
 
         $request->deleted = true;
         if ($this->Requests->save($request)) {
-            $this->Flash->success(__('The request has been canceled.'));
+            $this->Flash->success(__('La demande a été annulée.'));
         } else {
-            $this->Flash->error(__('The request could not be canceled. Please, try again.'));
+            $this->Flash->error(__('La demande n\'a pas pu être annulée. Veuillez réessayer.'));
         }
 
         return $this->redirect(['action' => 'index']);
@@ -284,7 +284,7 @@ class RequestsController extends AppController
             ->first();
 
         if (empty($request)) {
-            $this->Flash->error("Request not found.");
+            $this->Flash->error("Demande introuvable.");
             return $this->redirect(['action' => 'index']);
         }
 
@@ -326,7 +326,7 @@ class RequestsController extends AppController
         $request = $this->Requests->get($id);
 
         if (empty($request) || $request->user_id != $userId) {
-            $this->Flash->error("Request not found.");
+            $this->Flash->error("Demande introuvable.");
             return $this->redirect(['action' => 'index']);
         }
 

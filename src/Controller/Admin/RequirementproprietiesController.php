@@ -108,7 +108,7 @@ class RequirementproprietiesController extends AppController
             'conditions' => ['id' => $id, 'deleted' => false],
         ])->first();
         if (empty($requirementpropriety)) {
-            $this->Flash->error("propriety not found");
+            $this->Flash->error("propriété introuvable");
             $this->redirect($this->referer());
         }
 
@@ -119,12 +119,12 @@ class RequirementproprietiesController extends AppController
             );
 
             if ($this->Requirementproprieties->save($requirementpropriety)) {
-                $this->Flash->success(__('The requirementpropriety has been saved.'));
+                $this->Flash->success(__('La propriété du pré-requis a été enregistrée.'));
 
                 return $this->redirect(['action' => 'index', $requirementpropriety->requirement_id]);
             }
 
-            $this->Flash->error(__('The requirementpropriety could not be saved. Please, try again.'));
+            $this->Flash->error(__('La propriété du pré-requis n\'a pas pu être enregistrée. Veuillez réessayer.'));
         }
 
         $options = [

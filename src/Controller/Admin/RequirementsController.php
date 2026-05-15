@@ -59,11 +59,11 @@ class RequirementsController extends AppController
             $requirement = $this->Requirements->patchEntity($requirement, $this->request->getData());
             $requirement->deleted = 0;
             if ($this->Requirements->save($requirement)) {
-                $this->Flash->success(__('The requirement has been saved.'));
+                $this->Flash->success(__('Le pré-requis a été enregistré.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The requirement could not be saved. Please, try again.'));
+            $this->Flash->error(__('Le pré-requis n\'a pas pu être enregistré. Veuillez réessayer.'));
         }
         $requirementtypes = $this->Requirements->Requirementtypes->find('list', ['limit' => 200])->all();
         $this->set(compact('requirement', 'requirementtypes'));
@@ -84,11 +84,11 @@ class RequirementsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $requirement = $this->Requirements->patchEntity($requirement, $this->request->getData());
             if ($this->Requirements->save($requirement)) {
-                $this->Flash->success(__('The requirement has been saved.'));
+                $this->Flash->success(__('Le pré-requis a été enregistré.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The requirement could not be saved. Please, try again.'));
+            $this->Flash->error(__('Le pré-requis n\'a pas pu être enregistré. Veuillez réessayer.'));
         }
         $requirementtypes = $this->Requirements->Requirementtypes->find('list', ['limit' => 200])->all();
         $this->set(compact('requirement', 'requirementtypes'));
@@ -109,16 +109,16 @@ class RequirementsController extends AppController
             'conditions' => ['id' => $id, 'deleted' => false],
         ])->first();
         if (empty($requirement)) {
-            $this->Flash->error("propriety not found");
+            $this->Flash->error("Le pré-requis est introuvable");
             $this->redirect($this->referer());
         }
 
         $requirement->set('deleted', true);
 
         if ($this->Requirements->save($requirement)) {
-            $this->Flash->success(__('The requirement has been deleted.'));
+            $this->Flash->success(__('Le pré-requis a été supprimé.'));
         } else {
-            $this->Flash->error(__('The requirement could not be deleted. Please, try again.'));
+            $this->Flash->error(__('Le pré-requis n\'a pas pu être supprimé. Veuillez réessayer.'));
         }
 
         return $this->redirect(['action' => 'index']);

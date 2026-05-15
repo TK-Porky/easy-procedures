@@ -25,7 +25,7 @@ class ProcedurerequirementsController extends AppController
             'conditions' => ['id' => $id, 'deleted' => false]
         ])->first();
         if (empty($procedure)) {
-            $this->Flash->error("procedure not found");
+            $this->Flash->error("Procédure introuvable.");
             $this->redirect($this->referer());
         }
         $this->paginate = [
@@ -74,12 +74,12 @@ class ProcedurerequirementsController extends AppController
             }
 
             if ($i === count($this->request->getData('requirement_id'))) {
-                $this->Flash->success(__('The procedurerequirement has been saved.'));
+                $this->Flash->success(__('Le pré-requis de la procédure a été enregistré.'));
 
                 return $this->redirect(['action' => 'index', $procedurerequirement->procedure_id]);
             } else {
 
-                $this->Flash->error(__('The procedurerequirement could not be saved. Please, try again.'));
+                $this->Flash->error(__('Le pré-requis de la procédure n\'a pas pu être enregistré. Veuillez réessayer.'));
             }
         }
 
@@ -102,15 +102,15 @@ class ProcedurerequirementsController extends AppController
             'conditions' => ['id' => $id, 'deleted' => false]
         ])->first();
         if (empty($procedurerequirement)) {
-            $this->Flash->error("propriety not found");
+            $this->Flash->error("Pré-requis de procédure introuvable.");
             $this->redirect($this->referer());
         }
         $procedurerequirement->set('deleted', true);
 
         if ($this->Procedurerequirements->save($procedurerequirement)) {
-            $this->Flash->success(__('The procedurerequirement has been deleted.'));
+            $this->Flash->success(__('Le pré-requis de la procédure a été supprimé.'));
         } else {
-            $this->Flash->error(__('The procedurerequirement could not be deleted. Please, try again.'));
+            $this->Flash->error(__('Le pré-requis de la procédure n\'a pas pu être supprimé. Veuillez réessayer.'));
         }
 
         return $this->redirect(['action' => 'index', $procedurerequirement->procedure_id]);
@@ -121,7 +121,7 @@ class ProcedurerequirementsController extends AppController
             'conditions' => ['id' => $id, 'deleted' => false]
         ])->first();
         if (empty($procedure)) {
-            $this->Flash->error("procedure not found");
+            $this->Flash->error("Procédure introuvable.");
             $this->redirect($this->referer());
         }
         $this->paginate = [

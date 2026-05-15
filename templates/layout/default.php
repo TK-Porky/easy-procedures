@@ -128,7 +128,7 @@
                                 <a href="<?= $this->Url->build(['prefix' => $currentPrefix, 'controller' => 'Dashboard', 'action' => 'index']) ?>"
                                    class="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                     <i class="fa-solid fa-gauge-high w-4 text-gray-400"></i>
-                                    Dashboard
+                                    Tableau de bord
                                 </a>
                             </div>
 

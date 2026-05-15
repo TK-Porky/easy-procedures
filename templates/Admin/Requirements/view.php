@@ -3,7 +3,7 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Requirement $requirement
  */
-$this->assign('title', 'Détail du requis');
+$this->assign('title', 'Détails du pré-requis');
 ?>
 
 <nav class="flex mb-8" aria-label="Breadcrumb">
@@ -12,14 +12,14 @@ $this->assign('title', 'Détail du requis');
             <div>
                 <a href="<?= $this->Url->build(['prefix' => 'Admin', 'controller' => 'Dashboard', 'action' => 'index']) ?>" class="text-gray-400 hover:text-gray-500">
                     <i class="fa-solid fa-house"></i>
-                    <span class="sr-only">Home</span>
+                    <span class="sr-only">Accueil</span>
                 </a>
             </div>
         </li>
         <li>
             <div class="flex items-center">
                 <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
-                <a href="<?= $this->Url->build(['prefix' => 'Admin', 'controller' => 'Requirements', 'action' => 'index']) ?>" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">Requirements</a>
+                <a href="<?= $this->Url->build(['prefix' => 'Admin', 'controller' => 'Requirements', 'action' => 'index']) ?>" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">Pré-requis</a>
             </div>
         </li>
         <li>

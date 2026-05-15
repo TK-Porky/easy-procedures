@@ -1,5 +1,5 @@
 <?php
-$this->assign('title', 'Dashboard');
+$this->assign('title', 'Tableau de bord');
 
 $requestsTable   = \Cake\ORM\TableRegistry::getTableLocator()->get('Requests');
 $proceduresTable = \Cake\ORM\TableRegistry::getTableLocator()->get('Procedures');
@@ -166,7 +166,7 @@ $recentRequests = $requestsTable->find()
                     <i class="fa-solid fa-list-check text-violet-600 text-sm"></i>
                 </div>
                 <div>
-                    <p class="text-sm font-medium text-gray-800">Ajouter un requirement</p>
+                    <p class="text-sm font-medium text-gray-800">Ajouter un pré-requis</p>
                     <p class="text-xs text-gray-400">Définir un document requis</p>
                 </div>
             </a>

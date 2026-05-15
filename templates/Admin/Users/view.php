@@ -12,7 +12,7 @@ $this->assign('title', 'Profil Utilisateur');
             <div>
                 <a href="<?= $this->Url->build(['prefix' => 'Admin', 'controller' => 'Dashboard', 'action' => 'index']) ?>" class="text-gray-400 hover:text-gray-500">
                     <i class="fa-solid fa-house"></i>
-                    <span class="sr-only">Home</span>
+                    <span class="sr-only">Accueil</span>
                 </a>
             </div>
         </li>

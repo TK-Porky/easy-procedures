@@ -30,7 +30,7 @@
         $ctrl === 'Dashboard',
         $accentActive, $accentIcon,
         $this->Url->build(['controller' => 'Dashboard', 'action' => 'index']),
-        'fa-gauge-high', 'Dashboard'
+        'fa-gauge-high', 'Tableau de bord'
     ) ?>
 </div>
 
@@ -70,7 +70,7 @@
         $ctrl === 'Requirements' || $ctrl === 'Requirementproprieties',
         $accentActive, $accentIcon,
         $this->Url->build(['prefix' => 'Admin', 'controller' => 'Requirements', 'action' => 'index']),
-        'fa-list-check', 'Requirements'
+        'fa-list-check', 'Pré-requis'
     ) ?>
 
     <?= $navItem(

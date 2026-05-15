@@ -1,4 +1,4 @@
-<?php $this->assign('title', 'Users Agents'); ?>
+<?php $this->assign('title', 'Agents Utilisateurs'); ?>
 
 <?php
 // Pagination config (set in controller, mirrored here for reference)
@@ -51,13 +51,13 @@
         <li>
             <a href="<?= $this->Url->build(['prefix' => 'Admin', 'controller' => 'Dashboard', 'action' => 'index']) ?>" class="text-gray-400 hover:text-gray-500">
                 <i class="fa-solid fa-house"></i>
-                <span class="sr-only">Home</span>
+                <span class="sr-only">Accueil</span>
             </a>
         </li>
         <li>
             <div class="flex items-center">
                 <i class="fa-solid fa-chevron-right text-gray-400 text-xs"></i>
-                <span class="ml-4 text-sm font-medium text-gray-500">Users Agents</span>
+                <span class="ml-4 text-sm font-medium text-gray-500">Agents Utilisateurs</span>
             </div>
         </li>
     </ol>
@@ -82,10 +82,10 @@
     <div class="sm:flex sm:items-center mb-6">
         <div class="sm:flex-auto">
             <div class="flex items-center gap-3">
-                <h1 class="text-2xl font-semibold leading-6 text-gray-900"><?= __('Users Agents') ?></h1>
+                <h1 class="text-2xl font-semibold leading-6 text-gray-900"><?= __('Agents Utilisateurs') ?></h1>
                 <span class="ua-count-badge"><?= count($users) ?> agents</span>
             </div>
-            <p class="mt-1.5 text-sm text-gray-500">Manage and monitor all agents registered in the system.</p>
+            <p class="mt-1.5 text-sm text-gray-500">Gérez et surveillez tous les agents enregistrés dans le système.</p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <button
@@ -94,7 +94,7 @@
                 class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors"
             >
                 <i class="fa-solid fa-plus text-xs"></i>
-                Add New Agent
+                Ajouter un nouvel agent
             </button>
         </div>
     </div>
@@ -107,21 +107,21 @@
                 <input
                     type="text"
                     name="q"
-                    placeholder="Search by name, email, phone…"
+                    placeholder="Rechercher par nom, email, téléphone…"
                     value="<?= h($this->request->getQuery('q')) ?>"
                 />
             </div>
             <select name="sort" class="ua-select">
-                <option value="">Sort by…</option>
-                <option value="name" <?= $this->request->getQuery('sort') === 'name' ? 'selected' : '' ?>>Name A–Z</option>
-                <option value="created" <?= $this->request->getQuery('sort') === 'created' ? 'selected' : '' ?>>Newest first</option>
+                <option value="">Trier par…</option>
+                <option value="name" <?= $this->request->getQuery('sort') === 'name' ? 'selected' : '' ?>>Nom A–Z</option>
+                <option value="created" <?= $this->request->getQuery('sort') === 'created' ? 'selected' : '' ?>>Le plus récent en premier</option>
                 <option value="email" <?= $this->request->getQuery('sort') === 'email' ? 'selected' : '' ?>>Email A–Z</option>
             </select>
             <button type="submit" class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-                <i class="fa-solid fa-filter text-xs"></i> Apply
+                <i class="fa-solid fa-filter text-xs"></i> Appliquer
             </button>
             <?php if ($this->request->getQuery('q') || $this->request->getQuery('sort')) : ?>
-                <a href="<?= $this->Url->build(['action' => 'index']) ?>" class="text-sm text-indigo-600 hover:underline">Clear</a>
+                <a href="<?= $this->Url->build(['action' => 'index']) ?>" class="text-sm text-indigo-600 hover:underline">Effacer</a>
             <?php endif; ?>
         <?= $this->Form->end() ?>
     </div>
@@ -133,8 +133,8 @@
                 <tr>
                     <th><?= $this->Paginator->sort('name', __('Agent')) ?></th>
                     <th><?= $this->Paginator->sort('email', __('Email')) ?></th>
-                    <th><?= $this->Paginator->sort('phonenumber', __('Phone')) ?></th>
-                    <th><?= $this->Paginator->sort('created', __('Created')) ?></th>
+                    <th><?= $this->Paginator->sort('phonenumber', __('Téléphone')) ?></th>
+                    <th><?= $this->Paginator->sort('created', __('Créé le')) ?></th>
                     <th style="width: 80px; text-align: right;">Actions</th>
                 </tr>
             </thead>
@@ -143,7 +143,7 @@
                     <tr>
                         <td colspan="5" class="ua-empty">
                             <i class="fa-regular fa-user"></i>
-                            No agents found. Try adjusting your search.
+                            Aucun agent trouvé. Essayez d'ajuster votre recherche.
                         </td>
                     </tr>
                 <?php else : ?>
@@ -172,7 +172,7 @@
                             <td>
                                 <span class="ua-badge ua-badge-indigo">
                                     <i class="fa-regular fa-clock" style="font-size:10px;"></i>
-                                    <?= h($user->created->format('M d, Y')) ?>
+                                    <?= h($user->created->format('d/m/Y')) ?>
                                 </span>
                             </td>
                             <td>
@@ -181,7 +181,7 @@
                                     <button
                                         type="button"
                                         class="ua-btn-icon edit"
-                                        title="Edit"
+                                        title="Modifier"
                                         @click="setEdit({
                                             id: <?= $user->id ?>,
                                             name: '<?= addslashes(h($user->name)) ?>',
@@ -197,9 +197,9 @@
                                         '<i class="fa-solid fa-trash"></i>',
                                         ['action' => 'delete', $user->id],
                                         [
-                                            'confirm' => __('Delete {0} {1}? This action cannot be undone.', $user->name, $user->surname),
+                                            'confirm' => __('Supprimer {0} {1} ? Cette action est irréversible.', $user->name, $user->surname),
                                             'escape' => false,
-                                            'title' => 'Delete',
+                                            'title' => 'Supprimer',
                                             'class' => 'ua-btn-icon danger',
                                             'style' => 'color:#9ca3af;',
                                         ]
@@ -217,11 +217,11 @@
     <?php if ($this->Paginator->hasPage(2)) : ?>
     <div class="flex items-center justify-between mt-5">
         <p class="text-sm text-gray-500">
-            <?= $this->Paginator->counter(__('Showing {{start}}–{{end}} of {{count}} agents')) ?>
+            <?= $this->Paginator->counter(__('Affichage de {{start}}–{{end}} sur {{count}} agents')) ?>
         </p>
         <div class="flex items-center gap-1.5">
             <?php if ($this->Paginator->hasPrev()) : ?>
-                <a href="<?= $this->Paginator->generateUrl(['page' => $this->Paginator->current() - 1]) ?>" class="ua-page-btn" title="Previous">
+                <a href="<?= $this->Paginator->generateUrl(['page' => $this->Paginator->current() - 1]) ?>" class="ua-page-btn" title="Précédent">
                     <i class="fa-solid fa-chevron-left" style="font-size:11px;"></i>
                 </a>
             <?php else : ?>
@@ -242,7 +242,7 @@
             <?php endforeach; ?>
 
             <?php if ($this->Paginator->hasNext()) : ?>
-                <a href="<?= $this->Paginator->generateUrl(['page' => $currentPage + 1]) ?>" class="ua-page-btn" title="Next">
+                <a href="<?= $this->Paginator->generateUrl(['page' => $currentPage + 1]) ?>" class="ua-page-btn" title="Suivant">
                     <i class="fa-solid fa-chevron-right" style="font-size:11px;"></i>
                 </a>
             <?php else : ?>
@@ -266,19 +266,19 @@
                         <i class="fa-solid fa-user-plus" style="color:#4f46e5;font-size:15px;"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-semibold text-gray-900">Add New Agent</h3>
-                        <p class="text-xs text-gray-400 mt-0.5">Fill in the details to register a new agent.</p>
+                        <h3 class="text-base font-semibold text-gray-900">Ajouter un nouvel agent</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Remplissez les détails pour enregistrer un nouvel agent.</p>
                     </div>
                 </div>
 
                 <?= $this->Form->create(null, ['url' => ['action' => 'add']]) ?>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>First Name</label>
+                            <label>Prénom</label>
                             <input type="text" name="name" placeholder="John" required />
                         </div>
                         <div class="form-group">
-                            <label>Surname</label>
+                            <label>Nom</label>
                             <input type="text" name="surname" placeholder="Doe" required />
                         </div>
                     </div>
@@ -287,19 +287,19 @@
                         <input type="email" name="email" placeholder="john.doe@example.com" required />
                     </div>
                     <div class="form-group">
-                        <label>Phone Number</label>
+                        <label>Numéro de téléphone</label>
                         <input type="tel" name="phonenumber" placeholder="+1 555 000 0000" />
                     </div>
                     <div class="form-group">
-                        <label>Password</label>
+                        <label>Mot de passe</label>
                         <input type="password" name="password" placeholder="••••••••" required />
                     </div>
                     <div class="flex gap-3 mt-6">
                         <button type="button" @click="openAdd = false" class="flex-1 rounded-lg border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-                            Cancel
+                            Annuler
                         </button>
                         <button type="submit" class="flex-1 rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors">
-                            Create Agent
+                            Créer l'agent
                         </button>
                     </div>
                 <?= $this->Form->end() ?>
@@ -321,8 +321,8 @@
                         <i class="fa-solid fa-pen-to-square" style="color:#7c3aed;font-size:15px;"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-semibold text-gray-900">Edit Agent</h3>
-                        <p class="text-xs text-gray-400 mt-0.5" x-text="'Editing: ' + editUser.name + ' ' + editUser.surname"></p>
+                        <h3 class="text-base font-semibold text-gray-900">Modifier l'agent</h3>
+                        <p class="text-xs text-gray-400 mt-0.5" x-text="'Modification de : ' + editUser.name + ' ' + editUser.surname"></p>
                     </div>
                 </div>
 
@@ -333,11 +333,11 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>First Name</label>
+                            <label>Prénom</label>
                             <input type="text" name="name" x-model="editUser.name" placeholder="John" required />
                         </div>
                         <div class="form-group">
-                            <label>Surname</label>
+                            <label>Nom</label>
                             <input type="text" name="surname" x-model="editUser.surname" placeholder="Doe" required />
                         </div>
                     </div>
@@ -346,19 +346,19 @@
                         <input type="email" name="email" x-model="editUser.email" placeholder="john.doe@example.com" required />
                     </div>
                     <div class="form-group">
-                        <label>Phone Number</label>
+                        <label>Numéro de téléphone</label>
                         <input type="tel" name="phonenumber" x-model="editUser.phonenumber" placeholder="+1 555 000 0000" />
                     </div>
                     <div class="form-group">
-                        <label>New Password <span class="text-gray-400 font-normal normal-case">(leave blank to keep current)</span></label>
+                        <label>Nouveau mot de passe <span class="text-gray-400 font-normal normal-case">(laisser vide pour conserver l'actuel)</span></label>
                         <input type="password" name="password" placeholder="••••••••" />
                     </div>
                     <div class="flex gap-3 mt-6">
                         <button type="button" @click="openEdit = false" class="flex-1 rounded-lg border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-                            Cancel
+                            Annuler
                         </button>
                         <button type="submit" class="flex-1 rounded-lg bg-violet-600 py-2.5 text-sm font-semibold text-white hover:bg-violet-500 transition-colors">
-                            Save Changes
+                            Enregistrer les modifications
                         </button>
                     </div>
                 </form>
